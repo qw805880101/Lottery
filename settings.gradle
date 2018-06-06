@@ -1,1 +1,1 @@
-include ':app',':libmot'
+include ':app', ':libmot', ':tcmvplibrary', ':UpdateAppUtils', ':banner'

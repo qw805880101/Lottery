@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.TestActivity">
+
+
+    <Button
+        android:id="@+id/bt_zfb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="支付宝支付" />
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bt_wx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微信支付" />
+
+    <EditText
+        android:id="@+id/et_num"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:hint="购买票数量"
+        android:inputType="number"
+        android:text="1" />
+
+    <Button
+        android:id="@+id/bt_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="支付成功/出票" />
+
+    <com.tc.lottery.view.SuccessView
+        android:id="@+id/success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

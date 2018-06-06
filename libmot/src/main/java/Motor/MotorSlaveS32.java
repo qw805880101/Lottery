@@ -358,7 +358,9 @@ public class MotorSlaveS32
         boolean bret = false;
         try
         {
-            byte[] bcmds =  GetCommandDataS(mFID, MotorSlaveS32.CMD_TicketOut, nMid, num, nTicketLen,0);
+//            byte[] bcmds =  GetCommandDataS(mFID, MotorSlaveS32.CMD_TicketOut, nMid, num, nTicketLen,0);
+            byte CMD_MoveBack = (byte) 0xE7;
+            byte[] bcmds =  GetCommandDataS(mFID, CMD_MoveBack, nMid, 0, 0,0);
             sHexIn.append( HexUtil.byte2hex(bcmds));
             //LogUtil.d("cut send：" +sHexIn);
             byte[] bcmdrec =  SendDataS(mFID, bcmds, 15000);
