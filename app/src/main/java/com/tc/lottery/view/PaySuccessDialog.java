@@ -36,6 +36,8 @@ public class PaySuccessDialog {
     /* 彩票数量 */
     private TextView txtTicketNum;
 
+    private SuccessView mSuccessView;
+
     private Button btBack, btHow;
 
     private Display display;
@@ -81,6 +83,8 @@ public class PaySuccessDialog {
 
         txtTicketNum = view.findViewById(R.id.txt_ticket_num);
 
+        mSuccessView = view.findViewById(R.id.success);
+
         btBack = view.findViewById(R.id.bt_back);
 
         btHow = view.findViewById(R.id.bt_how);
@@ -118,6 +122,7 @@ public class PaySuccessDialog {
             @Override
             public void onAnimationEnd(Animation animation) {
                 imageTicket.clearAnimation();
+                mSuccessView.setVisibility(View.VISIBLE);
                 imageSuccess.setAlpha(1.0f);
                 startSuccessAnim();
             }
