@@ -24,6 +24,9 @@
         <activity
             android:name=".activity.BuyActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.HowActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

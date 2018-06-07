@@ -2,6 +2,7 @@ package com.tc.lottery.view;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tc.lottery.R;
+import com.tc.lottery.activity.HowActivity;
 
 /**
  * 交易完成弹框
@@ -32,7 +34,7 @@ public class PaySuccessDialog {
     private Dialog dialog;
 
     /* 彩票动画 */
-    private ImageView imageTicket, imageSuccess;
+    private ImageView imageTicket;
     /* 彩票数量 */
     private TextView txtTicketNum;
 
@@ -79,8 +81,6 @@ public class PaySuccessDialog {
 
         imageTicket = view.findViewById(R.id.image_pay_ticket);
 
-        imageSuccess = view.findViewById(R.id.image_pay_success);
-
         txtTicketNum = view.findViewById(R.id.txt_ticket_num);
 
         mSuccessView = view.findViewById(R.id.success);
@@ -88,6 +88,13 @@ public class PaySuccessDialog {
         btBack = view.findViewById(R.id.bt_back);
 
         btHow = view.findViewById(R.id.bt_how);
+
+        btHow.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, HowActivity.class));
+            }
+        });
 
         dialog = new Dialog(context, R.style.buyDialog);
         dialog.setContentView(view);
@@ -103,6 +110,9 @@ public class PaySuccessDialog {
 
     TranslateAnimation anim;
 
+    /**
+     * 开始出票完成动画
+     */
     public void startAnim() {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chupiao2_piao);
         anim = new TranslateAnimation(0.0f, 0.0f, -bitmap.getHeight() - 10, 0);
@@ -123,35 +133,9 @@ public class PaySuccessDialog {
             public void onAnimationEnd(Animation animation) {
                 imageTicket.clearAnimation();
                 mSuccessView.setVisibility(View.VISIBLE);
-                imageSuccess.setAlpha(1.0f);
-                startSuccessAnim();
             }
         });
-        imageSuccess.setAlpha(0.0f);
         imageTicket.startAnimation(anim);
-    }
-
-    public void startSuccessAnim() {
-        AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(500);
-        anim.setFillAfter(true);
-        anim.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                imageSuccess.clearAnimation();
-            }
-        });
-        imageSuccess.startAnimation(anim);
     }
 
     /**
@@ -177,7 +161,7 @@ public class PaySuccessDialog {
      */
     private void startBackNum() {
         backNum = 20;
-        btBack.setText("返回" + backNum);
+        btBack.setText("返回(" + backNum);
         mBackRunnable = new Runnable() {
             @Override
             public void run() {

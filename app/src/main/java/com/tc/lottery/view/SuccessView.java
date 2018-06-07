@@ -3,12 +3,14 @@ package com.tc.lottery.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.tc.lottery.R;
 
+/**
+ * 打勾动画
+ */
 public class SuccessView extends View {
 
     //绘制圆弧的进度值
@@ -58,38 +60,37 @@ public class SuccessView extends View {
         //圆弧半径
         int radius = getWidth() / 2 - 5;
 
-        //定义的圆弧的形状和大小的界限
-        RectF rectF = new RectF(center - radius - 1, center - radius - 1, center + radius + 1, center + radius + 1);
-
-        //根据进度画圆弧
-        canvas.drawArc(rectF, 235, -360 * progress / 100, false, paint);
+//        //定义的圆弧的形状和大小的界限
+//        RectF rectF = new RectF(center - radius - 1, center - radius - 1, center + radius + 1, center + radius + 1);
+//
+//        //根据进度画圆弧
+//        canvas.drawArc(rectF, 235, -360 * progress / 100, false, paint);
 
         /**
          * 绘制对勾
          */
         //先等圆弧画完，才话对勾
-        if (progress >= 100) {
-            if (line1_x < radius / 3) {
-                line1_x++;
-                line1_y++;
-            }
-            //画第一根线
-            canvas.drawLine(center1, center, center1 + line1_x, center + line1_y, paint);
-
-            if (line1_x == radius / 3) {
-                line2_x = line1_x;
-                line2_y = line1_y;
-                line1_x++;
-                line1_y++;
-            }
-            if (line1_x >= radius / 3 && line2_x <= radius) {
-                line2_x++;
-                line2_y--;
-            }
-            //画第二根线
-            canvas.drawLine(center1 + line1_x - 1, center + line1_y, center1 + line2_x, center + line2_y, paint);
+//        if (progress >= 100) {
+        if (line1_x < radius / 3) {
+            line1_x += 2;
+            line1_y += 2;
         }
-        //每隔10毫秒界面刷新
-        postInvalidateDelayed(5);
+        //画第一根线
+        canvas.drawLine(center1, center, center1 + line1_x, center + line1_y, paint);
+
+        if (line1_x == radius / 3) {
+            line2_x = line1_x;
+            line2_y = line1_y;
+            line1_x += 2;
+            line1_y += 2;
+        }
+        if (line1_x >= radius / 3 && line2_x <= radius) {
+            line2_x += 2;
+            line2_y -= 2;
+        }
+        //画第二根线
+        canvas.drawLine(center1 + line1_x - 1, center + line1_y, center1 + line2_x, center + line2_y, paint);
+//        }
+        postInvalidate();
     }
 }

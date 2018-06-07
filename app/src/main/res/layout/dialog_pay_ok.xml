@@ -51,13 +51,13 @@
                         android:scaleType="fitXY"
                         android:src="@mipmap/chupiao2_piao" />
 
-                    <ImageView
-                        android:id="@+id/image_pay_success"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:src="@mipmap/chupiao2_gou"
-                        android:visibility="gone" />
+                    <!--<ImageView-->
+                        <!--android:id="@+id/image_pay_success"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:src="@mipmap/chupiao2_gou"-->
+                        <!--android:visibility="gone" />-->
 
                     <com.tc.lottery.view.SuccessView
                         android:id="@+id/success"

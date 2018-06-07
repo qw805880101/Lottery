@@ -38,7 +38,7 @@ public class OutTicketDialog {
     private int outTicketNum = 1; //已出票
     private int ticketNum = 10; //总票数
 
-    private OnSheetItemClickListener mClickListener;
+    private OutTicketSuccess mOutTicketSuccess;
 
     public OutTicketDialog(Context context) {
         this.context = context;
@@ -106,13 +106,14 @@ public class OutTicketDialog {
             if (msg.what == 0) {
                 imageTicket.startAnimation(anim);
             }
-
             if (msg.what == 1) {
-                outTicketNum++;
                 if (outTicketNum <= ticketNum) {
                     txtTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + ticketNum + "）");
+                    outTicketNum++;
                 } else {
-
+                    mHandler.removeCallbacks(mTicketNumRunnable);
+                    mHandler.removeCallbacks(mAnimRunnable);
+                    mOutTicketSuccess.onSuccess(outTicketNum - 1);
                 }
             }
         }
@@ -137,6 +138,7 @@ public class OutTicketDialog {
     }
 
     public void setTicketNum(int ticketNum) {
+        this.outTicketNum = 1;
         this.ticketNum = ticketNum;
         txtTicketNum.setText("支付成功！正在出票...（1/" + ticketNum + "）");
         startTicketNum();
@@ -172,11 +174,16 @@ public class OutTicketDialog {
     }
 
 
-    public void setOnClick(OnSheetItemClickListener mClickListener) {
-        this.mClickListener = mClickListener;
+    public void setOutTicketSuccess(OutTicketSuccess mOutTicketSuccess) {
+        this.mOutTicketSuccess = mOutTicketSuccess;
     }
 
-    public interface OnSheetItemClickListener {
-        void onClick(int which);
+    public interface OutTicketSuccess {
+        /**
+         * 出票完成
+         *
+         * @param outNum 出票数
+         */
+        void onSuccess(int outNum);
     }
 }

@@ -1,9 +1,12 @@
 package com.tc.lottery.activity;
 
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.psylife.wrmvplibrary.utils.timeutils.DateUtil;
@@ -24,6 +28,9 @@ import com.tc.lottery.util.QRCodeUtil;
 import com.tc.lottery.util.Utils;
 import com.tc.lottery.view.BuyDialog;
 import com.tc.lottery.view.OutTicketDialog;
+import com.tc.lottery.view.OutTicketDialog.OutTicketSuccess;
+import com.tc.lottery.view.PaySuccessDialog;
+import com.tc.lottery.view.SoldOutDialog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,6 +109,7 @@ public class BuyActivity extends BaseActivity {
 
     private int lotteryNum = 1; //彩票票数
     private double lotteryTotalAmt = 0; //彩票总金额
+    private int surplus = 0; //余票
 
     private Map orderMap; //订单map
 
@@ -110,9 +118,13 @@ public class BuyActivity extends BaseActivity {
     private Handler handler = new Handler();
     private Runnable runnable; //查询订单交易状态线程
 
-    BuyDialog dialog; //支付弹框
+    private SoldOutDialog mSoldOutDialog; //已售罄弹框
 
-    OutTicketDialog mBuyOkDialog; //支付成功弹框
+    private BuyDialog mBuyDialog; //等待支付弹框
+
+    private OutTicketDialog mOutTicketDialog; //支付成功出票中弹框
+
+    private PaySuccessDialog mPaySuccessDialog; //交易完成弹框
 
     @Override
     public View getTitleView() {
@@ -126,15 +138,32 @@ public class BuyActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        dialog = new BuyDialog(this);
-        dialog.builder();
-        dialog.setCancelable(false); //对话框点击不可消失
-        dialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
+        mBuyDialog = new BuyDialog(this);
+        mBuyDialog.builder();
+        mBuyDialog.setCancelable(false); //对话框点击不可消失
+        mBuyDialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
 
-        mBuyOkDialog = new OutTicketDialog(this);
-        mBuyOkDialog.builder();
-        mBuyOkDialog.setCancelable(false); //对话框点击不可消失
-        mBuyOkDialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
+        mOutTicketDialog = new OutTicketDialog(this);
+        mOutTicketDialog.builder();
+        mOutTicketDialog.setCancelable(false); //对话框点击不可消失
+        mOutTicketDialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
+
+        mPaySuccessDialog = new PaySuccessDialog(this);
+        mPaySuccessDialog.builder();
+        mPaySuccessDialog.setCancelable(false); //对话框点击不可消失
+        mPaySuccessDialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
+
+
+        mSoldOutDialog = new SoldOutDialog(this);
+        mSoldOutDialog.builder();
+        mSoldOutDialog.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                finish();
+            }
+        });
+//        mSoldOutDialog.setCancelable(false); //对话框点击不可消失
+//        mSoldOutDialog.setCanceledOnTouchOutside(false); //对话框点击不可消失
     }
 
     @Override
@@ -148,7 +177,13 @@ public class BuyActivity extends BaseActivity {
 
         mTerminalLotteryInfo = mTerminalLotteryInfos.get(0);
 
-        mTxtSurplusNum.setText("剩余 " + mTerminalLotteryInfo.getSurplus() + " 张");
+        surplus = Integer.parseInt(mTerminalLotteryInfo.getSurplus());
+
+        mTxtSurplusNum.setText("剩余 " + surplus + " 张");
+
+        if (mTerminalLotteryInfo.getSurplus().equals("0")) {
+            mSoldOutDialog.show();
+        }
 
         updateLotteryNum(0);
     }
@@ -188,6 +223,16 @@ public class BuyActivity extends BaseActivity {
      */
     private void updateLotteryNum(int num) {
         lotteryNum += num;
+        if (lotteryNum > surplus) {
+            ToastUtils.showToast(this, "当前余票不足");
+            lotteryNum = surplus;
+        }
+
+        if (lotteryNum > 10) {
+            ToastUtils.showToast(this, "一次最多购买10张");
+            lotteryNum = 10;
+        }
+
         lotteryTotalAmt = lotteryNum * Double.parseDouble(mTerminalLotteryInfo.getLotteryAmt()) / 100;
         mTxtLotteryNum.setText("" + lotteryNum);
         mTxtTotalAmt.setText("" + lotteryTotalAmt);
@@ -232,6 +277,9 @@ public class BuyActivity extends BaseActivity {
         }, this));
     }
 
+    /**
+     * 查询支付订单状态
+     */
     private void queryOrder() {
         Map sendMap = Utils.getRequestData("queryOrder.Req");
         sendMap.put("merOrderId", orderMap.get("merOrderId"));
@@ -246,9 +294,51 @@ public class BuyActivity extends BaseActivity {
                     if ("00".equals(orderInfo.getRespCode())) {
 
                         if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
+                            mBuyDialog.dismiss();
                             handler.removeCallbacks(runnable);
-                            ToastUtils.showToast(BuyActivity.this, "交易成功");
+                            showOutTicketDialog(lotteryNum);
+//                            ToastUtils.showToast(BuyActivity.this, "交易成功");
                         }
+                    }
+                } else {
+                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+                }
+            }
+        }, this));
+    }
+
+    /**
+     * 更新出票状态
+     *
+     * @param ticketStatus 1 出票成功
+     *                     2 出票异常
+     */
+    private void outTicket(String ticketStatus) {
+        TerminalLotteryInfo terminalLotteryInfo = mTerminalLotteryInfos.get(0);
+        terminalLotteryInfo.setNum("" + lotteryNum);
+        terminalLotteryInfo.setTicketStatus(ticketStatus);
+
+        List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
+        lotteryInfos.add(terminalLotteryInfo);
+
+        Map sendMap = Utils.getRequestData("outTicket.Req");
+        sendMap.put("merOrderId", orderMap.get("merOrderId"));
+        sendMap.put("terminalLotteryDtos", lotteryInfos);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
+        Observable<BaseBean<BaseBean>> register = mApi.outTicket(requestBody).compose(RxUtil.<BaseBean<BaseBean>>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<BaseBean<BaseBean>>() {
+            @Override
+            public void call(BaseBean<BaseBean> baseBean) {
+//                stopProgressDialog();
+                if (baseBean.getRespCode().equals("00")) {
+                    BaseBean beanInfo = baseBean.getResponseData();
+                    if ("00".equals(beanInfo.getRespCode())) {
+                        surplus -= lotteryNum;
+                        if (surplus == 0) {
+                            mSoldOutDialog.show();
+                        }
+                        mTxtSurplusNum.setText("剩余 " + surplus + " 张");
+                        LogUtil.d("状态更新成功");
                     }
                 } else {
                     toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
@@ -272,6 +362,14 @@ public class BuyActivity extends BaseActivity {
         handler.postDelayed(runnable, 5000);
     }
 
+    /**
+     * 弹出等待支付弹框
+     *
+     * @param num
+     * @param amt
+     * @param payType
+     * @param bitCode
+     */
     private void showDialog(String num, String amt, String payType, Bitmap bitCode) {
         String[] nums = num.split("");
         String[] amts = amt.split("");
@@ -283,23 +381,52 @@ public class BuyActivity extends BaseActivity {
         for (int i = 0; i < amts.length; i++) {
             amtList.add(amts[i]);
         }
-        dialog.setRecyclerViewNum(numList);
-        dialog.setRecyclerViewAmt(amtList);
-        dialog.setImagePayIcon(payType.equals("01") ? R.mipmap.zf_icon_alipay : R.mipmap.zf_icon_wx);
-        dialog.setImageCode(bitCode);
-        dialog.setBtBack(new OnClickListener() {
+        mBuyDialog.setRecyclerViewNum(numList);
+        mBuyDialog.setRecyclerViewAmt(amtList);
+        mBuyDialog.setImagePayIcon(payType.equals("01") ? R.mipmap.zf_icon_alipay : R.mipmap.zf_icon_wx);
+        mBuyDialog.setImageCode(bitCode);
+        mBuyDialog.setBtBack(new OnClickListener() {
             @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                showOkDialog();
+            public void onClick(View view) { //返回，关闭交易查询线程
+                mBuyDialog.dismiss();
+                handler.removeCallbacks(runnable);
             }
         });
-        dialog.show();
+        mBuyDialog.show();
     }
 
-    private void showOkDialog() {
-        mBuyOkDialog.startAnim();
-        mBuyOkDialog.show();
+    /**
+     * 弹出出票弹框
+     *
+     * @param num 总票数
+     */
+    private void showOutTicketDialog(int num) {
+        mOutTicketDialog.setTicketNum(num);
+        mOutTicketDialog.startAnim();
+        mOutTicketDialog.setOutTicketSuccess(new OutTicketSuccess() {
+            @Override
+            public void onSuccess(int outNum) {
+                //出票完成回调接口
+                mOutTicketDialog.dismiss();
+                outTicket("1");
+                showPaySuccessDialog(outNum);
+            }
+        });
+        mOutTicketDialog.show();
     }
 
+    /**
+     * 交易完成弹框
+     */
+    private void showPaySuccessDialog(int outNum) {
+        mPaySuccessDialog.setTicketNum(outNum);
+        mPaySuccessDialog.startAnim();
+        mPaySuccessDialog.setBtBack(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPaySuccessDialog.dismiss();
+            }
+        });
+        mPaySuccessDialog.show();
+    }
 }

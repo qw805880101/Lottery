@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
+
         //设置图片加载器
         mBanner.setImageLoader(new GlideImageLoader());
         bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546799&di=5acdd6bef77d8cc7f8db4dcb14dca803&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F21%2F22%2F71g58PICBQT_1024.jpg");
@@ -80,10 +81,10 @@ public class MainActivity extends BaseActivity {
 
     @OnClick({R.id.bt_buy, R.id.bt_prompt})
     public void onViewClicked(View view) {
-//        if (!initStatus) {
-//            ToastUtils.showToast(this, "未初始化成功");
-//            return;
-//        }
+        if (!initStatus) {
+            ToastUtils.showToast(this, "未初始化成功");
+            return;
+        }
         switch (view.getId()) {
             case R.id.bt_buy:
                 Intent intent = new Intent(this, BuyActivity.class);
@@ -92,19 +93,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.bt_prompt:
-                final PaySuccessDialog mBuyOkDialog = new PaySuccessDialog(this);
-                mBuyOkDialog.builder();
-                mBuyOkDialog.setCancelable(true); //对话框点击不可消失
-                mBuyOkDialog.setCanceledOnTouchOutside(true); //对话框点击不可消失
-                mBuyOkDialog.startAnim();
-                mBuyOkDialog.setTicketNum(10);
-                mBuyOkDialog.setBtBack(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mBuyOkDialog.dismiss();
-                    }
-                });
-                mBuyOkDialog.show();
+                startActivity(new Intent(this, HowActivity.class));
                 break;
         }
     }
@@ -135,7 +124,7 @@ public class MainActivity extends BaseActivity {
                     }
                     if ("00".equals(initInfo.getRespCode())) {
                         initStatus = true;
-                        ToastUtils.showToast(MainActivity.this, "初始化成功");
+//                        ToastUtils.showToast(MainActivity.this, "初始化成功");
                     } else {
                         toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
                     }
@@ -147,4 +136,9 @@ public class MainActivity extends BaseActivity {
         }, this));
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initStart();
+    }
 }
