@@ -15,13 +15,20 @@
  */
 package com.psylife.wrmvplibrary.utils.sex;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.psylife.wrmvplibrary.BaseApplication;
+import com.psylife.wrmvplibrary.bean.BaseBeanInfo;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.psylife.wrmvplibrary.utils.SignUtil;
+import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.Utils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -50,6 +57,24 @@ final class DeCodeGsonResponseBodyConverter<T> implements Converter<ResponseBody
 //                response = JSON.toJSONString(map);
 //            }
             LogUtil.d("response", response);
+            Map responseMaps = JSON.parseObject(response);
+            BaseBeanInfo mBaseBeanInfo = JSON.parseObject(response, BaseBeanInfo.class);
+
+            boolean checkStatus = false;
+            try {
+                checkStatus = SignUtil.checkSign(responseMaps, BaseApplication.PRIVATE_KEY);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (!checkStatus) {
+                mBaseBeanInfo.setRespCode("9999");
+                mBaseBeanInfo.setRespDesc("返回参数验签失败");
+                response = JSON.toJSONString(mBaseBeanInfo);
+            } else {
+                response = JSON.toJSONString(mBaseBeanInfo.getResponseData());
+            }
+
             value = ResponseBody.create(MediaType.parse("application/json; charset=utf-8"), response);
             JsonReader jsonReader = gson.newJsonReader(value.charStream());
             return adapter.read(jsonReader);

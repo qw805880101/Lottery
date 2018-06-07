@@ -18,7 +18,7 @@ import rx.functions.Action1;
 
 public abstract class BaseActivity extends WRBaseActivity implements Action1<Throwable> {
 
-    public Api mApi = RxService.createApi(Api.class, MyApplication.URL);
+    public Api mApi = RxService.createApiDecode(Api.class, MyApplication.URL);
 
     public RxManager mRxManager = new RxManager();
 

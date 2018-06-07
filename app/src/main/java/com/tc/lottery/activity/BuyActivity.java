@@ -356,10 +356,10 @@ public class BuyActivity extends BaseActivity {
             public void run() {
                 //查询交易订单，以实现每两五秒实现一次
                 queryOrder();
-                handler.postDelayed(this, 5000);
+                handler.postDelayed(this, 3000);
             }
         };
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 7000);
     }
 
     /**

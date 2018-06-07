@@ -89,4 +89,15 @@ public class Utils {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         return Base64.encode(baos.toByteArray());
     }
+
+    public static boolean isEmpty(String str) {
+        boolean fal = false;
+        if (str == null || str.equals("")) {
+            fal = true;
+        } else {
+            fal = false;
+        }
+        return fal;
+    }
+
 }
