@@ -23,7 +23,7 @@ public class MyApplication extends BaseApplication {
 
     public static int GOODS_NUM = 0;
 
-    public static String URL = "https://new-orator.com/gateway/";
+    public static String URL = "https://www.new-orator.com/gateway/";
 
     public static String USER_ID = "26";
 
