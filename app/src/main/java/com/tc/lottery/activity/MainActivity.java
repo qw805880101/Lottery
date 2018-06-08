@@ -105,13 +105,14 @@ public class MainActivity extends BaseActivity {
         startProgressDialog(this);
         Map sendMap = Utils.getRequestData("terminalInit.Req");
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean<InitInfo>> register = mApi.init(requestBody).compose(RxUtil.<BaseBean<InitInfo>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean<InitInfo>>() {
+        Observable<InitInfo> register = mApi.init(requestBody).compose(RxUtil.<InitInfo>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<InitInfo>() {
             @Override
-            public void call(BaseBean<InitInfo> baseBean) {
+            public void call(InitInfo baseBean) {
                 stopProgressDialog();
-                if (baseBean.getRespCode().equals("00")) {
-                    initInfo = baseBean.getResponseData();
+                initInfo = baseBean;
+                if ("00".equals(initInfo.getRespCode())) {
+//                        ToastUtils.showToast(MainActivity.this, "初始化成功");
                     if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
                         UpdateAppUtils.from(MainActivity.this)
                                 .serverVersionName(initInfo.getVersion()) //服务器versionName
@@ -122,15 +123,9 @@ public class MainActivity extends BaseActivity {
                                 .isForce(initInfo.getUpdateStatus().equals("01") ? true : false) //是否强制更新，默认false 强制更新情况下用户不同意更新则不能使用app
                                 .update();
                     }
-                    if ("00".equals(initInfo.getRespCode())) {
-                        initStatus = true;
-//                        ToastUtils.showToast(MainActivity.this, "初始化成功");
-                    } else {
-                        toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
-                    }
-
+                    initStatus = true;
                 } else {
-                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+                    toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
                 }
             }
         }, this));

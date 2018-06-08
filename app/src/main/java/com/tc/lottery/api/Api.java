@@ -491,7 +491,7 @@ public interface Api {
 //    Observable<Object> test(@Body RequestBody file);
 
     @POST("front/")
-    Observable<BaseBean<InitInfo>> init(@Body RequestBody file);
+    Observable<InitInfo> init(@Body RequestBody file);
 
     /**
      * 下单接口
@@ -500,7 +500,7 @@ public interface Api {
      * @return
      */
     @POST("front/")
-    Observable<BaseBean<OrderInfo>> prepOrder(@Body RequestBody file);
+    Observable<OrderInfo> prepOrder(@Body RequestBody file);
 
     /**
      * 订单查询
@@ -509,7 +509,7 @@ public interface Api {
      * @return
      */
     @POST("front/")
-    Observable<BaseBean<OrderInfo>> queryOrder(@Body RequestBody file);
+    Observable<OrderInfo> queryOrder(@Body RequestBody file);
 
     /**
      * 出票状态更新
@@ -518,6 +518,6 @@ public interface Api {
      * @return
      */
     @POST("front/")
-    Observable<BaseBean<BaseBean>> outTicket(@Body RequestBody file);
+    Observable<BaseBean> outTicket(@Body RequestBody file);
 
 }

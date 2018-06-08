@@ -256,22 +256,20 @@ public class BuyActivity extends BaseActivity {
         orderMap.put("terminalLotteryDtos", lotteryInfos);
         orderMap.put("payType", payType);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(orderMap));
-        Observable<BaseBean<OrderInfo>> register = mApi.prepOrder(requestBody).compose(RxUtil.<BaseBean<OrderInfo>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean<OrderInfo>>() {
+        Observable<OrderInfo> register = mApi.prepOrder(requestBody).compose(RxUtil.<OrderInfo>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<OrderInfo>() {
             @Override
-            public void call(BaseBean<OrderInfo> baseBean) {
+            public void call(OrderInfo orderInfo) {
                 stopProgressDialog();
-                if (baseBean.getRespCode().equals("00")) {
-                    OrderInfo orderInfo = baseBean.getResponseData();
-
-                    if ("00".equals(orderInfo.getRespCode()) && !"".equals(orderInfo.getQrCode())) {
+                if (orderInfo.getRespCode().equals("00")) {
+                    if (!"".equals(orderInfo.getQrCode())) {
                         bitCode = QRCodeUtil.createQRCodeBitmap(orderInfo.getQrCode(), 300, 300);
                         startQueryOrder();
                         showDialog("" + lotteryNum, "" + lotteryTotalAmt, payType, bitCode);
                     }
 
                 } else {
-                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+                    toastMessage(orderInfo.getRespCode(), orderInfo.getRespDesc());
                 }
             }
         }, this));
@@ -284,24 +282,20 @@ public class BuyActivity extends BaseActivity {
         Map sendMap = Utils.getRequestData("queryOrder.Req");
         sendMap.put("merOrderId", orderMap.get("merOrderId"));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean<OrderInfo>> register = mApi.queryOrder(requestBody).compose(RxUtil.<BaseBean<OrderInfo>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean<OrderInfo>>() {
+        Observable<OrderInfo> register = mApi.queryOrder(requestBody).compose(RxUtil.<OrderInfo>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<OrderInfo>() {
             @Override
-            public void call(BaseBean<OrderInfo> baseBean) {
+            public void call(OrderInfo orderInfo) {
 //                stopProgressDialog();
-                if (baseBean.getRespCode().equals("00")) {
-                    OrderInfo orderInfo = baseBean.getResponseData();
-                    if ("00".equals(orderInfo.getRespCode())) {
-
-                        if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
-                            mBuyDialog.dismiss();
-                            handler.removeCallbacks(runnable);
-                            showOutTicketDialog(lotteryNum);
+                if (orderInfo.getRespCode().equals("00")) {
+                    if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
+                        mBuyDialog.dismiss();
+                        handler.removeCallbacks(runnable);
+                        showOutTicketDialog(lotteryNum);
 //                            ToastUtils.showToast(BuyActivity.this, "交易成功");
-                        }
                     }
                 } else {
-                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+                    toastMessage(orderInfo.getRespCode(), orderInfo.getRespDesc());
                 }
             }
         }, this));
@@ -325,21 +319,18 @@ public class BuyActivity extends BaseActivity {
         sendMap.put("merOrderId", orderMap.get("merOrderId"));
         sendMap.put("terminalLotteryDtos", lotteryInfos);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean<BaseBean>> register = mApi.outTicket(requestBody).compose(RxUtil.<BaseBean<BaseBean>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean<BaseBean>>() {
+        Observable<BaseBean> register = mApi.outTicket(requestBody).compose(RxUtil.<BaseBean>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<BaseBean>() {
             @Override
-            public void call(BaseBean<BaseBean> baseBean) {
+            public void call(BaseBean baseBean) {
 //                stopProgressDialog();
                 if (baseBean.getRespCode().equals("00")) {
-                    BaseBean beanInfo = baseBean.getResponseData();
-                    if ("00".equals(beanInfo.getRespCode())) {
-                        surplus -= lotteryNum;
-                        if (surplus == 0) {
-                            mSoldOutDialog.show();
-                        }
-                        mTxtSurplusNum.setText("剩余 " + surplus + " 张");
-                        LogUtil.d("状态更新成功");
+                    surplus -= lotteryNum;
+                    if (surplus == 0) {
+                        mSoldOutDialog.show();
                     }
+                    mTxtSurplusNum.setText("剩余 " + surplus + " 张");
+                    LogUtil.d("状态更新成功");
                 } else {
                     toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
                 }

@@ -157,41 +157,41 @@ public class InitActivity extends BaseActivity {
     }
 
     private void start() {
-        startProgressDialog(this);
-        Map sendMap = Utils.getRequestData("terminalInit.Req");
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean<InitInfo>> register = mApi.init(requestBody).compose(RxUtil.<BaseBean<InitInfo>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean<InitInfo>>() {
-            @Override
-            public void call(BaseBean<InitInfo> baseBean) {
-                stopProgressDialog();
-                if (baseBean.getRespCode().equals("00")) {
-                    InitInfo initInfo = baseBean.getResponseData();
-                    if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
-                        UpdateAppUtils.from(InitActivity.this)
-                                .serverVersionName(initInfo.getVersion()) //服务器versionName
-                                .serverVersionCode(BuildConfig.VERSION_CODE + 1)
-                                .apkPath(initInfo.getUpdateAddress()) //最新apk下载地址
-                                .updateInfo(initInfo.getMsgExt())  //更新日志信息 String
-//                                    .downloadBy(UpdateAppUtils.DOWNLOAD_BY_BROWSER) //下载方式：app下载、手机浏览器下载。默认app下载
-                                .isForce(initInfo.getUpdateStatus().equals("01") ? true : false) //是否强制更新，默认false 强制更新情况下用户不同意更新则不能使用app
-                                .update();
-                    }
-                    initInfo.setTerminalStatus("00");
-                    if ("00".equals(initInfo.getRespCode())) {
-                        Intent intent = new Intent(InitActivity.this, APiActivity.class);
-                        intent.putExtra("TerminalLotteryInfo", (Serializable) initInfo.getTerminalLotteryDtos());
-                        intent.putExtra("TerminalLotteryStatus", initInfo.getTerminalStatus());
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
-                    }
-
-                } else {
-                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
-                }
-            }
-        }, InitActivity.this));
+//        startProgressDialog(this);
+//        Map sendMap = Utils.getRequestData("terminalInit.Req");
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
+//        Observable<BaseBean<InitInfo>> register = mApi.init(requestBody).compose(RxUtil.<BaseBean<InitInfo>>rxSchedulerHelper());
+//        mRxManager.add(register.subscribe(new Action1<BaseBean<InitInfo>>() {
+//            @Override
+//            public void call(BaseBean<InitInfo> baseBean) {
+//                stopProgressDialog();
+//                if (baseBean.getRespCode().equals("00")) {
+//                    InitInfo initInfo = baseBean.getResponseData();
+//                    if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
+//                        UpdateAppUtils.from(InitActivity.this)
+//                                .serverVersionName(initInfo.getVersion()) //服务器versionName
+//                                .serverVersionCode(BuildConfig.VERSION_CODE + 1)
+//                                .apkPath(initInfo.getUpdateAddress()) //最新apk下载地址
+//                                .updateInfo(initInfo.getMsgExt())  //更新日志信息 String
+////                                    .downloadBy(UpdateAppUtils.DOWNLOAD_BY_BROWSER) //下载方式：app下载、手机浏览器下载。默认app下载
+//                                .isForce(initInfo.getUpdateStatus().equals("01") ? true : false) //是否强制更新，默认false 强制更新情况下用户不同意更新则不能使用app
+//                                .update();
+//                    }
+//                    initInfo.setTerminalStatus("00");
+//                    if ("00".equals(initInfo.getRespCode())) {
+//                        Intent intent = new Intent(InitActivity.this, APiActivity.class);
+//                        intent.putExtra("TerminalLotteryInfo", (Serializable) initInfo.getTerminalLotteryDtos());
+//                        intent.putExtra("TerminalLotteryStatus", initInfo.getTerminalStatus());
+//                        startActivity(intent);
+//                        finish();
+//                    } else {
+//                        toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
+//                    }
+//
+//                } else {
+//                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+//                }
+//            }
+//        }, InitActivity.this));
     }
 }

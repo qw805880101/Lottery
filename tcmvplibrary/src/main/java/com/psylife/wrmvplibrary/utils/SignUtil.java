@@ -1,5 +1,7 @@
 package com.psylife.wrmvplibrary.utils;
 
+import com.alibaba.fastjson.JSON;
+
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -51,24 +53,22 @@ public class SignUtil {
         return Base64Class.encodeToString(signature.sign(), 0);
     }
 
+    private static String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDE2gnaEwJzGUInakWWB98aRJeOoT3mCksX8ON/4NXuw+0BGeNGQgD0RrM2Oy0YFpG3zqMWLpASir3sSQTt8ea9B8kl3WsIe6N/GtUEmAS+kYN24La1qhzPfqUY+y8X1NgoakTficElc7kxT3VwqcH/ebvRApZuiziyOGw8GsxzcwIDAQAB";
+
     /**
      * 签名验证
      *
-     * @param contentData
-     * @param publicKey
      * @return
      */
-    public static boolean checkSign(Map<String, String> contentData, String publicKey)
+    public static boolean checkSign(String data, String sign)
             throws Exception {
-        String orgSign = contentData.get("sign");
-        String stringSignTemp = coverMap2String(filterBlank(contentData));
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64Class.decode(publicKey, 0));
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey publicK = keyFactory.generatePublic(keySpec);
         Signature signature = Signature.getInstance("SHA1WithRSA");
         signature.initVerify(publicK);
-        signature.update(stringSignTemp.getBytes("utf-8"));
-        return signature.verify(Base64Class.decode(orgSign, 0));
+        signature.update(data.getBytes("utf-8"));
+        return signature.verify(Base64Class.decode(sign, 0));
     }
 
     /**
