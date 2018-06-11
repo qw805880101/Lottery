@@ -4,43 +4,29 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.psylife.wrmvplibrary.utils.timeutils.DateUtil;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
-import com.tc.lottery.bean.BaseBean;
 import com.tc.lottery.bean.OrderInfo;
 import com.tc.lottery.bean.TerminalLotteryInfo;
 import com.tc.lottery.bean.UpdateOutTicketStatusInfo;
 import com.tc.lottery.util.QRCodeUtil;
 import com.tc.lottery.util.Utils;
-import com.tc.lottery.view.BuyDialog;
-import com.tc.lottery.view.OutTicketDialog;
-import com.tc.lottery.view.OutTicketDialog.OutTicketSuccess;
-import com.tc.lottery.view.PaySuccessDialog;
-import com.tc.lottery.view.SoldOutDialog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -321,8 +307,8 @@ public class Buy_2Activity extends BaseActivity {
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
         orderMap = Utils.getRequestData("prepOrder.Req");
-        orderMap.put("merOrderId", DateUtil.format(new Date(), "YYYYMMDDhhmmss") + payType); //订单规则：日期+交易类型+交易金额
-        orderMap.put("merOrderTime", DateUtil.format(new Date(), "YYYYMMDDhhmmss"));
+        orderMap.put("merOrderId", DateUtil.format(new Date(), "yyyymmddhhmmss") + payType); //订单规则：日期+交易类型+交易金额
+        orderMap.put("merOrderTime", DateUtil.format(new Date(), "yyyymmddhhmmss"));
         orderMap.put("orderAmt", "" + (lotteryTotalAmt * 100));
         orderMap.put("terminalLotteryDtos", lotteryInfos);
         orderMap.put("payType", payType);
@@ -510,14 +496,15 @@ public class Buy_2Activity extends BaseActivity {
             startBackNum();
     }
 
-    int backNum = 10;
+    int backNum = 90;
 
     /**
      * 开始返回倒计时
      */
     private void startBackNum() {
+        backNum = 90;
         mTxtBack.setEnabled(false);
-        mTxtBack.setText("关闭(10)");
+        mTxtBack.setText("关闭(90)");
         mBackRunnable = new Runnable() {
             @Override
             public void run() {

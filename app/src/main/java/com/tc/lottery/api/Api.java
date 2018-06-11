@@ -490,7 +490,7 @@ public interface Api {
 //    @POST("xxx")
 //    Observable<Object> test(@Body RequestBody file);
 
-    @POST("mpi/")
+    @POST("front/")
     Observable<InitInfo> init(@Body RequestBody file);
 
     /**
@@ -499,7 +499,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("mpi/")
+    @POST("front/")
     Observable<OrderInfo> prepOrder(@Body RequestBody file);
 
     /**
@@ -508,7 +508,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("mpi/")
+    @POST("front/")
     Observable<OrderInfo> queryOrder(@Body RequestBody file);
 
     /**
@@ -517,7 +517,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("mpi/")
+    @POST("front/")
     Observable<BaseBean> outTicket(@Body RequestBody file);
 
 }

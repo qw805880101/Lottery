@@ -16,24 +16,18 @@
 package com.psylife.wrmvplibrary.utils.sex;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.psylife.wrmvplibrary.BaseApplication;
 import com.psylife.wrmvplibrary.bean.BaseBeanInfo;
-import com.psylife.wrmvplibrary.utils.JsonObjectUtil;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.SignUtil;
-import com.psylife.wrmvplibrary.utils.ToastUtils;
-import com.psylife.wrmvplibrary.utils.Utils;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;

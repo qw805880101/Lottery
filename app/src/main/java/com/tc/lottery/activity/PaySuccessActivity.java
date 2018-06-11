@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.tc.lottery.bean.BaseBean;
 import com.tc.lottery.bean.TerminalLotteryInfo;
 import com.tc.lottery.bean.UpdateOutTicketStatusInfo;
 import com.tc.lottery.util.Utils;
+import com.tc.lottery.view.SuccessView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +52,12 @@ public class PaySuccessActivity extends BaseActivity {
     @BindView(R.id.lin_bt)
     LinearLayout mLinBt;
     @BindView(R.id.image_ticket)
-    LinearLayout imageTicket;
+    ImageView imageTicket;
+    @BindView(R.id.success_view)
+    SuccessView successView;
 
-    private int lotteryNum; //彩票数量
+
+    private int lotteryNum = 5; //彩票数量
     private int outTicketNum = 1; //已出数量
 
     private TranslateAnimation anim; //彩票动画
@@ -102,9 +107,9 @@ public class PaySuccessActivity extends BaseActivity {
     @Override
     public void initdata() {
         Intent intent = this.getIntent();
-        lotteryNum = intent.getIntExtra("lotteryNum", 1);
-        mUpdateOutTicketStatusInfo = (UpdateOutTicketStatusInfo) intent.getSerializableExtra("outTicket");
-
+//        lotteryNum = intent.getIntExtra("lotteryNum", 1);
+//        mUpdateOutTicketStatusInfo = (UpdateOutTicketStatusInfo) intent.getSerializableExtra("outTicket");
+//
         mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
 
         startAnim();
@@ -134,7 +139,7 @@ public class PaySuccessActivity extends BaseActivity {
         mLinBt.setVisibility(View.VISIBLE);
 
         mTxtAllNum.setText("" + lotteryNum);
-        outTicket("1");
+//        outTicket("1");
     }
 
     /**
@@ -179,7 +184,7 @@ public class PaySuccessActivity extends BaseActivity {
      * 开始出票动画
      */
     public void startAnim() {
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.chupiao_bg_piao);
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.buy_step2_ticket);
         anim = new TranslateAnimation(0.0f, 0.0f, -bitmap.getHeight(), 0);
         anim.setDuration(1500);
         anim.setFillAfter(true);

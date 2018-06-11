@@ -16,18 +16,18 @@
 
             <RelativeLayout
                 android:id="@+id/rl_bg"
-                android:layout_width="751dp"
-                android:layout_height="753dp"
+                android:layout_width="475.5dp"
+                android:layout_height="476.5dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="300dp"
+                android:layout_marginTop="200dp"
                 android:background="@mipmap/buy_step1_bg3">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="106dp"
-                    android:layout_marginRight="106dp"
-                    android:layout_marginTop="130dp"
+                    android:layout_marginLeft="70.6dp"
+                    android:layout_marginRight="70.6dp"
+                    android:layout_marginTop="86.6dp"
                     android:orientation="vertical">
 
                     <RelativeLayout
@@ -38,8 +38,8 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="270dp"
-                            android:layout_height="90dp"
+                            android:layout_width="180dp"
+                            android:layout_height="60dp"
                             android:layout_centerHorizontal="true"
                             android:background="@mipmap/buy_sl_bg"
                             android:gravity="center">
@@ -49,23 +49,23 @@
                                 android:layout_height="wrap_content"
                                 android:text="数量:"
                                 android:textColor="@color/txt_color_333333"
-                                android:textSize="30dp" />
+                                android:textSize="20dp" />
 
                             <TextView
                                 android:id="@+id/txt_lottery_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginLeft="6.6dp"
                                 android:text="6"
                                 android:textColor="@color/txt_color_f0264c"
-                                android:textSize="40dp" />
+                                android:textSize="26.6dp" />
 
                         </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/bt_reduce"
-                            android:layout_width="140dp"
-                            android:layout_height="90dp"
+                            android:layout_width="93.3dp"
+                            android:layout_height="60dp"
                             android:layout_alignParentLeft="true"
                             android:background="@drawable/bt_selector_reduce"
                             android:scaleType="fitXY"
@@ -73,8 +73,8 @@
 
                         <ImageButton
                             android:id="@+id/bt_add"
-                            android:layout_width="140dp"
-                            android:layout_height="90dp"
+                            android:layout_width="93.3dp"
+                            android:layout_height="60dp"
                             android:layout_alignParentRight="true"
                             android:background="@drawable/bt_selector_reduce"
                             android:scaleType="fitXY"
@@ -86,40 +86,40 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="30dp"
+                        android:layout_marginTop="20dp"
                         android:gravity="center|center_vertical"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/bt_add_five"
-                            android:layout_width="140dp"
-                            android:layout_height="80dp"
-                            android:layout_marginRight="29dp"
+                            android:layout_width="90.3dp"
+                            android:layout_height="53.3dp"
+                            android:layout_marginRight="15dp"
                             android:background="@drawable/bt_selector_add_num"
                             android:text="+5"
                             android:textColor="@color/txt_color_333333"
-                            android:textSize="30dp" />
+                            android:textSize="20dp" />
 
                         <Button
                             android:id="@+id/bt_add_ten"
-                            android:layout_width="140dp"
-                            android:layout_height="80dp"
-                            android:layout_marginLeft="29dp"
-                            android:layout_marginRight="29dp"
+                            android:layout_width="90.3dp"
+                            android:layout_height="53.3dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginLeft="15dp"
                             android:background="@drawable/bt_selector_add_num"
                             android:text="+10"
                             android:textColor="@color/txt_color_333333"
-                            android:textSize="30dp" />
+                            android:textSize="20dp" />
 
                         <Button
                             android:id="@+id/bt_clear"
-                            android:layout_width="140dp"
-                            android:layout_height="80dp"
-                            android:layout_marginLeft="29dp"
+                            android:layout_width="90.3dp"
+                            android:layout_height="53.3dp"
+                            android:layout_marginLeft="15dp"
                             android:background="@drawable/bt_selector_add_num"
                             android:text="清空"
                             android:textColor="@color/txt_color_333333"
-                            android:textSize="30dp" />
+                            android:textSize="20dp" />
 
                     </LinearLayout>
 
@@ -130,33 +130,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="141dp"
-                    android:layout_marginLeft="26dp"
-                    android:layout_marginRight="26dp"
-                    android:layout_marginTop="380dp"
+                    android:layout_marginBottom="62.6dp"
+                    android:layout_marginLeft="17.3dp"
+                    android:layout_marginRight="17.3dp"
+                    android:visibility="visible"
+                    android:layout_marginTop="253.3dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="246dp"
+                        android:layout_width="164dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:paddingLeft="40dp">
+                        android:paddingLeft="26.6dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="35dp"
+                            android:layout_marginTop="23.3dp"
                             android:text="选择付款方式"
                             android:textColor="@color/txt_color_666666"
-                            android:textSize="25dp" />
+                            android:textSize="16.6dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="35dp"
+                            android:layout_marginTop="23.3dp"
                             android:text="金额  ："
                             android:textColor="@color/txt_color_666666"
-                            android:textSize="25dp" />
+                            android:textSize="16.6dp" />
 
                         <TextView
                             android:id="@+id/txt_total_amt"
@@ -164,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:text="￥300.00"
                             android:textColor="@color/txt_color_f0264c"
-                            android:textSize="40dp" />
+                            android:textSize="26.6dp" />
 
 
                     </LinearLayout>
@@ -177,15 +178,15 @@
 
                         <ImageButton
                             android:id="@+id/image_bt_wx_pay"
-                            android:layout_width="170dp"
-                            android:layout_height="150dp"
+                            android:layout_width="113.3dp"
+                            android:layout_height="100dp"
                             android:background="@null"
                             android:src="@mipmap/buy_zf_wx" />
 
                         <ImageButton
                             android:id="@+id/image_bt_zfb_pay"
-                            android:layout_width="170dp"
-                            android:layout_height="150dp"
+                            android:layout_width="113.3dp"
+                            android:layout_height="100dp"
                             android:background="@null"
                             android:src="@mipmap/buy_zf_alipay" />
 
@@ -198,37 +199,38 @@
         </RelativeLayout>
 
         <ImageView
-            android:layout_width="270dp"
-            android:layout_height="251dp"
+            android:layout_width="170dp"
+            android:layout_height="167.3dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="75dp"
+            android:layout_marginTop="55dp"
             android:src="@mipmap/buy_step1_caipiao" />
 
         <TextView
             android:id="@+id/txt_lottery_surplus"
-            android:layout_width="167dp"
-            android:layout_height="62dp"
-            android:layout_marginLeft="120dp"
-            android:layout_marginTop="280dp"
+            android:layout_width="111.3dp"
+            android:layout_height="41.3dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="186.6dp"
             android:background="@mipmap/buy_step1_piao_bg"
             android:gravity="center"
             android:text="剩余68张"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="16dp" />
 
         <ImageView
-            android:layout_width="188dp"
-            android:layout_height="156dp"
-            android:layout_marginLeft="600dp"
-            android:layout_marginTop="180dp"
+            android:layout_width="125.3dp"
+            android:layout_height="104dp"
+            android:layout_marginLeft="400dp"
+            android:layout_marginTop="120dp"
+            android:visibility="visible"
             android:src="@mipmap/buy_step1_jiangjin" />
 
         <ImageView
             android:id="@+id/image_amt"
-            android:layout_width="195dp"
-            android:layout_height="74dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="84dp"
+            android:layout_width="130dp"
+            android:layout_height="49.3dp"
+            android:layout_marginLeft="66.6dp"
+            android:layout_marginTop="56dp"
             android:src="@mipmap/buy_step1_5yuan" />
 
     </RelativeLayout>
@@ -241,49 +243,49 @@
         android:layout_alignParentBottom="true" />
 
     <ImageView
-        android:layout_width="900dp"
-        android:layout_height="496dp"
+        android:layout_width="600dp"
+        android:layout_height="330.6dp"
         android:layout_above="@id/view_bottom"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/buy_step1_bg2" />
 
     <ImageView
         android:id="@+id/image_sold_out"
-        android:layout_width="698dp"
-        android:layout_height="568dp"
+        android:layout_width="465.3dp"
+        android:layout_height="378.6dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="373dp"
+        android:layout_marginTop="240.6dp"
         android:src="@mipmap/buy_step1_mask"
         android:visibility="gone" />
 
     <ImageView
-        android:layout_width="900dp"
-        android:layout_height="162dp"
+        android:layout_width="600dp"
+        android:layout_height="108dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="886dp"
+        android:layout_marginTop="590.6dp"
         android:src="@mipmap/buy_step1_caidai" />
 
     <RelativeLayout
         android:id="@+id/rl_order_bg"
         android:layout_width="wrap_content"
-        android:layout_height="430dp"
+        android:layout_height="286.6dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="965dp">
+        android:layout_marginTop="643.3dp">
 
         <RelativeLayout
             android:id="@+id/rl_order"
-            android:layout_width="690dp"
-            android:layout_height="430dp"
-            android:layout_marginTop="-375dp"
+            android:layout_width="460dp"
+            android:layout_height="286.6dp"
+            android:layout_marginTop="-250dp"
             android:background="@mipmap/buy_step1_code_bg2">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -292,12 +294,12 @@
                     android:layout_height="wrap_content"
                     android:text="请使用 "
                     android:textColor="@color/txt_color_333333"
-                    android:textSize="20dp" />
+                    android:textSize="13.3dp" />
 
                 <ImageView
                     android:id="@+id/image_pay_icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="37.3dp"
+                    android:layout_height="37.3dp"
                     android:src="@mipmap/zf_icon_wx" />
 
                 <TextView
@@ -305,28 +307,28 @@
                     android:layout_height="wrap_content"
                     android:text=" 扫描二维码付款"
                     android:textColor="@color/txt_color_333333"
-                    android:textSize="20dp" />
+                    android:textSize="13.3dp" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/image_code"
-                android:layout_width="220dp"
-                android:layout_height="220dp"
-                android:padding="15dp"
+                android:layout_width="146.6dp"
+                android:layout_height="146.6dp"
+                android:padding="10dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="66.6dp"
                 android:background="@mipmap/buy_step1_code_bg" />
 
             <TextView
                 android:id="@+id/txt_back"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="6.6dp"
                 android:gravity="center"
                 android:text="关闭(90)"
                 android:textColor="@color/txt_color_333333"
-                android:textSize="30dp"
+                android:textSize="20dp"
                 android:visibility="gone" />
 
 
@@ -336,10 +338,10 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="690dp"
-        android:layout_height="30dp"
+        android:layout_width="460dp"
+        android:layout_height="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="965dp"
+        android:layout_marginTop="643.3dp"
         android:src="@mipmap/buy_step1_code_mask" />
 
 

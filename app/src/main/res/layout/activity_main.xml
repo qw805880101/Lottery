@@ -11,7 +11,7 @@
         android:layout_weight="1"
         android:background="@color/bg_color_20324d"
         android:orientation="vertical"
-        android:padding="30dp">
+        android:padding="15dp">
 
         <com.youth.banner.Banner
             android:id="@+id/banner"
@@ -28,7 +28,7 @@
             <ImageButton
                 android:id="@+id/bt_buy"
                 android:layout_width="wrap_content"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@mipmap/home_btn_buy"
@@ -37,7 +37,7 @@
             <ImageButton
                 android:id="@+id/bt_prompt"
                 android:layout_width="wrap_content"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:background="@mipmap/home_btn_how" />

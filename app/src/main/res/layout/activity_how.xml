@@ -28,20 +28,20 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="340dp"
+            android:layout_height="226.6dp"
             android:scaleType="fitXY"
             android:src="@mipmap/how_gzh" />
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="726dp"
-            android:layout_marginTop="200dp"
+            android:layout_height="454dp"
+            android:layout_marginTop="133.3dp"
             android:src="@mipmap/how_lc" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="13.3dp"
             android:background="@mipmap/how_btn_back"
             android:gravity="center"
             android:orientation="horizontal">
@@ -54,7 +54,7 @@
                 android:gravity="center"
                 android:text="我要购彩"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/txt_back"
@@ -64,7 +64,7 @@
                 android:gravity="center"
                 android:text="返回"
                 android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
         </LinearLayout>
 

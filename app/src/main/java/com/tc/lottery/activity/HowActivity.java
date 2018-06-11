@@ -43,7 +43,7 @@ public class HowActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_buy:
-                startActivity(new Intent(this, Buy_2Activity.class));
+                startActivity(new Intent(this, PaySuccessActivity.class));
                 finish();
                 break;
             case R.id.txt_back:
