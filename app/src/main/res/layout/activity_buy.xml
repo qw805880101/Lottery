@@ -51,7 +51,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginLeft="20dp"
-            android:src="@mipmap/five_yuan" />
+             />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -96,7 +96,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_weight="0.2"
-                android:background="@mipmap/buy_sl_bg_left"
                 android:scaleType="fitXY"
                 android:src="@drawable/bt_selector_reduce" />
 
@@ -130,7 +129,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_weight="0.2"
-                android:background="@mipmap/buy_sl_bg_right"
                 android:scaleType="fitXY"
                 android:src="@drawable/bt_selector_add" />
 

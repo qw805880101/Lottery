@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/buy_step1_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rl_bg"
+                android:layout_width="751dp"
+                android:layout_height="753dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="300dp"
+                android:background="@mipmap/buy_step1_bg3">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="106dp"
+                    android:layout_marginRight="106dp"
+                    android:layout_marginTop="130dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center|center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="270dp"
+                            android:layout_height="90dp"
+                            android:layout_centerHorizontal="true"
+                            android:background="@mipmap/buy_sl_bg"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="数量:"
+                                android:textColor="@color/txt_color_333333"
+                                android:textSize="30dp" />
+
+                            <TextView
+                                android:id="@+id/txt_lottery_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="6"
+                                android:textColor="@color/txt_color_f0264c"
+                                android:textSize="40dp" />
+
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/bt_reduce"
+                            android:layout_width="140dp"
+                            android:layout_height="90dp"
+                            android:layout_alignParentLeft="true"
+                            android:background="@drawable/bt_selector_reduce"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/buy_icon_jian" />
+
+                        <ImageButton
+                            android:id="@+id/bt_add"
+                            android:layout_width="140dp"
+                            android:layout_height="90dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/bt_selector_reduce"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/buy_icon_jia" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp"
+                        android:gravity="center|center_vertical"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/bt_add_five"
+                            android:layout_width="140dp"
+                            android:layout_height="80dp"
+                            android:layout_marginRight="29dp"
+                            android:background="@drawable/bt_selector_add_num"
+                            android:text="+5"
+                            android:textColor="@color/txt_color_333333"
+                            android:textSize="30dp" />
+
+                        <Button
+                            android:id="@+id/bt_add_ten"
+                            android:layout_width="140dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="29dp"
+                            android:layout_marginRight="29dp"
+                            android:background="@drawable/bt_selector_add_num"
+                            android:text="+10"
+                            android:textColor="@color/txt_color_333333"
+                            android:textSize="30dp" />
+
+                        <Button
+                            android:id="@+id/bt_clear"
+                            android:layout_width="140dp"
+                            android:layout_height="80dp"
+                            android:layout_marginLeft="29dp"
+                            android:background="@drawable/bt_selector_add_num"
+                            android:text="清空"
+                            android:textColor="@color/txt_color_333333"
+                            android:textSize="30dp" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="141dp"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginRight="26dp"
+                    android:layout_marginTop="380dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="246dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="40dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="35dp"
+                            android:text="选择付款方式"
+                            android:textColor="@color/txt_color_666666"
+                            android:textSize="25dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="35dp"
+                            android:text="金额  ："
+                            android:textColor="@color/txt_color_666666"
+                            android:textSize="25dp" />
+
+                        <TextView
+                            android:id="@+id/txt_total_amt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="￥300.00"
+                            android:textColor="@color/txt_color_f0264c"
+                            android:textSize="40dp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/image_bt_wx_pay"
+                            android:layout_width="170dp"
+                            android:layout_height="150dp"
+                            android:background="@null"
+                            android:src="@mipmap/buy_zf_wx" />
+
+                        <ImageButton
+                            android:id="@+id/image_bt_zfb_pay"
+                            android:layout_width="170dp"
+                            android:layout_height="150dp"
+                            android:background="@null"
+                            android:src="@mipmap/buy_zf_alipay" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="251dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="75dp"
+            android:src="@mipmap/buy_step1_caipiao" />
+
+        <TextView
+            android:id="@+id/txt_lottery_surplus"
+            android:layout_width="167dp"
+            android:layout_height="62dp"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="280dp"
+            android:background="@mipmap/buy_step1_piao_bg"
+            android:gravity="center"
+            android:text="剩余68张"
+            android:textColor="@color/white"
+            android:textSize="25dp" />
+
+        <ImageView
+            android:layout_width="188dp"
+            android:layout_height="156dp"
+            android:layout_marginLeft="600dp"
+            android:layout_marginTop="180dp"
+            android:src="@mipmap/buy_step1_jiangjin" />
+
+        <ImageView
+            android:id="@+id/image_amt"
+            android:layout_width="195dp"
+            android:layout_height="74dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="84dp"
+            android:src="@mipmap/buy_step1_5yuan" />
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/view_bottom"
+        layout="@layout/view_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <ImageView
+        android:layout_width="900dp"
+        android:layout_height="496dp"
+        android:layout_above="@id/view_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/buy_step1_bg2" />
+
+    <ImageView
+        android:id="@+id/image_sold_out"
+        android:layout_width="698dp"
+        android:layout_height="568dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="373dp"
+        android:src="@mipmap/buy_step1_mask"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="900dp"
+        android:layout_height="162dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="886dp"
+        android:src="@mipmap/buy_step1_caidai" />
+
+    <RelativeLayout
+        android:id="@+id/rl_order_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="430dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="965dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_order"
+            android:layout_width="690dp"
+            android:layout_height="430dp"
+            android:layout_marginTop="-375dp"
+            android:background="@mipmap/buy_step1_code_bg2">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请使用 "
+                    android:textColor="@color/txt_color_333333"
+                    android:textSize="20dp" />
+
+                <ImageView
+                    android:id="@+id/image_pay_icon"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@mipmap/zf_icon_wx" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 扫描二维码付款"
+                    android:textColor="@color/txt_color_333333"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_code"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:padding="15dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:background="@mipmap/buy_step1_code_bg" />
+
+            <TextView
+                android:id="@+id/txt_back"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="关闭(90)"
+                android:textColor="@color/txt_color_333333"
+                android:textSize="30dp"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="690dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="965dp"
+        android:src="@mipmap/buy_step1_code_mask" />
+
+
+</RelativeLayout>

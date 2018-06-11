@@ -2,42 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color_20324d"
-    android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="20dp">
-
-    <com.youth.banner.Banner
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:background="@color/bg_color_20324d"
+        android:orientation="vertical"
+        android:padding="30dp">
 
-        <ImageButton
-            android:id="@+id/bt_buy"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginRight="2.5dp"
-            android:layout_weight="1"
-            android:background="@mipmap/home_btn_buy"
-            android:gravity="center" />
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/bt_prompt"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginLeft="2.5dp"
-            android:layout_weight="1"
-            android:background="@mipmap/home_btn_how" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/bt_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@mipmap/home_btn_buy"
+                android:gravity="center" />
+
+            <ImageButton
+                android:id="@+id/bt_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@mipmap/home_btn_how" />
+        </LinearLayout>
+
     </LinearLayout>
 
+    <include layout="@layout/view_bottom" />
 
 </LinearLayout>

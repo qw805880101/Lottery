@@ -81,13 +81,13 @@ public class MainActivity extends BaseActivity {
 
     @OnClick({R.id.bt_buy, R.id.bt_prompt})
     public void onViewClicked(View view) {
-        if (!initStatus) {
-            ToastUtils.showToast(this, "未初始化成功");
-            return;
-        }
+//        if (!initStatus) {
+//            ToastUtils.showToast(this, "未初始化成功");
+//            return;
+//        }
         switch (view.getId()) {
             case R.id.bt_buy:
-                Intent intent = new Intent(this, BuyActivity.class);
+                Intent intent = new Intent(this, Buy_2Activity.class);
                 intent.putExtra("TerminalLotteryInfo", (Serializable) initInfo.getTerminalLotteryDtos());
                 intent.putExtra("TerminalLotteryStatus", initInfo.getTerminalStatus());
                 startActivity(intent);

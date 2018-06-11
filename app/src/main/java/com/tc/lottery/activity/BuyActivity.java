@@ -420,4 +420,10 @@ public class BuyActivity extends BaseActivity {
         });
         mPaySuccessDialog.show();
     }
+
+    @Override
+    protected void onResume() {
+        super.isBuyActivity = true;
+        super.onResume();
+    }
 }
