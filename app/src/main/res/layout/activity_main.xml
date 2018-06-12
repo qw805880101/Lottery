@@ -21,26 +21,26 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="160dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/bt_buy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="273.3dp"
+                android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:background="@mipmap/home_btn_buy"
+                android:background="@drawable/bt_selector_main_buy"
                 android:gravity="center" />
 
             <ImageButton
                 android:id="@+id/bt_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="273.3dp"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:background="@mipmap/home_btn_how" />
+                android:background="@drawable/bt_selector_main_how" />
         </LinearLayout>
 
     </LinearLayout>

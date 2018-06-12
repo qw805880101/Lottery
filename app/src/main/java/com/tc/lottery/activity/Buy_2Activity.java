@@ -142,7 +142,7 @@ public class Buy_2Activity extends BaseActivity {
     private Bitmap bitCode; //支付二维码
 
     private Handler handler = new Handler();
-    private Runnable runnable; //查询订单交易状态线程
+    private Runnable queryRunnable; //查询订单交易状态线程
 
     /* 出订单动画 */
     private TranslateAnimation orderAnim;
@@ -205,12 +205,20 @@ public class Buy_2Activity extends BaseActivity {
                 updateLotteryNum(10);
                 break;
             case R.id.bt_clear:
-                updateLotteryNum(-(lotteryNum - 1));
+                updateLotteryNum(-(lotteryNum));
                 break;
             case R.id.image_bt_wx_pay:
+                if (lotteryNum == 0) {
+                    ToastUtils.showToast(this, "至少购买一张");
+                    return;
+                }
                 prepOrder("02");
                 break;
             case R.id.image_bt_zfb_pay:
+                if (lotteryNum == 0) {
+                    ToastUtils.showToast(this, "至少购买一张");
+                    return;
+                }
                 prepOrder("01");
                 break;
             case R.id.txt_back:
@@ -307,8 +315,8 @@ public class Buy_2Activity extends BaseActivity {
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
         orderMap = Utils.getRequestData("prepOrder.Req");
-        orderMap.put("merOrderId", DateUtil.format(new Date(), "yyyymmddhhmmss") + payType); //订单规则：日期+交易类型+交易金额
-        orderMap.put("merOrderTime", DateUtil.format(new Date(), "yyyymmddhhmmss"));
+        orderMap.put("merOrderId", DateUtil.format(new Date(), "yyyyMMddHHmmss") + payType + (lotteryTotalAmt * 100)); //订单规则：日期+交易类型+交易金额
+        orderMap.put("merOrderTime", DateUtil.format(new Date(), "yyyyMMddHHmmss"));
         orderMap.put("orderAmt", "" + (lotteryTotalAmt * 100));
         orderMap.put("terminalLotteryDtos", lotteryInfos);
         orderMap.put("payType", payType);
@@ -347,7 +355,8 @@ public class Buy_2Activity extends BaseActivity {
 //                stopProgressDialog();
                 if (orderInfo.getRespCode().equals("00")) {
                     if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
-                        handler.removeCallbacks(runnable);
+                        handler.removeCallbacks(queryRunnable);
+                        handler.removeMessages(0);
                         Intent intent = new Intent(Buy_2Activity.this, PaySuccessActivity.class);
                         intent.putExtra("lotteryNum", lotteryNum);
                         intent.putExtra("outTicket", outTicket());
@@ -379,7 +388,7 @@ public class Buy_2Activity extends BaseActivity {
      * 开始查询订单交易状态
      */
     private void startQueryOrder() {
-        runnable = new Runnable() {
+        queryRunnable = new Runnable() {
             @Override
             public void run() {
                 //查询交易订单，以实现每两五秒实现一次
@@ -387,7 +396,7 @@ public class Buy_2Activity extends BaseActivity {
                 handler.postDelayed(this, 3000);
             }
         };
-        handler.postDelayed(runnable, 7000);
+        handler.postDelayed(queryRunnable, 7000);
     }
 
     /**
@@ -477,9 +486,10 @@ public class Buy_2Activity extends BaseActivity {
                     mTxtBack.setText("关闭(" + backNum + ")");
                 } else {
                     mHandler.removeCallbacks(mBackRunnable);
-                    handler.removeCallbacks(runnable);
+                    handler.removeCallbacks(queryRunnable);
                     mTxtBack.setEnabled(true);
                     mTxtBack.setText("关闭");
+                    startCloseAnim();
                 }
             }
         }

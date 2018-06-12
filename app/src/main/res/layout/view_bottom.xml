@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="15dp"
-    android:paddingTop="10dp">
+    android:paddingBottom="6.6dp"
+    android:paddingLeft="6.6dp"
+    android:paddingRight="10dp"
+    android:paddingTop="6.6dp">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingRight="30dp"
+        android:paddingRight="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -28,7 +28,7 @@
             android:gravity="right|center_vertical"
             android:text="新纶彩商通"
             android:textColor="@color/txt_color_333333"
-            android:textSize="20dp" />
+            android:textSize="13.3dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:gravity="right|center_vertical"
             android:text=" 关注公众号 轻松兑奖"
             android:textColor="@color/txt_color_333333"
-            android:textSize="20dp" />
+            android:textSize="13.3dp" />
 
     </LinearLayout>
 

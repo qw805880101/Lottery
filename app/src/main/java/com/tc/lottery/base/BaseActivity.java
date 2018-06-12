@@ -59,8 +59,8 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     }
 
     private void init() {
-        //初始化CountTimer，设置倒计时为4分钟。
-        countTimerView = new CountTimer(240000, 1000, this);
+        //初始化CountTimer，设置倒计时为3分钟。
+        countTimerView = new CountTimer(180000, 1000, this);
     }
 
     private void timeStart() {

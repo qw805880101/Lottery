@@ -65,9 +65,10 @@
 
             <com.tc.lottery.view.SuccessView
                 android:id="@+id/success_view"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true"/>
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true" />
 
 
         </RelativeLayout>
@@ -86,9 +87,9 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="233.3dp"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:paddingLeft="78dp"
-            android:paddingRight="78dp">
+            android:paddingRight="78dp"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/bt_how"

@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.lottery.BuildConfig;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
+import com.tc.lottery.bean.BaseBean;
 import com.tc.lottery.bean.InitInfo;
 import com.tc.lottery.util.GlideImageLoader;
 import com.tc.lottery.util.Utils;
@@ -58,9 +60,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initView(Bundle savedInstanceState) {
 
-        getDisplayInfomation();
-        getScreenSizeOfDevice();
-        getScreenSizeOfDevice2();
         //设置图片加载器
         mBanner.setImageLoader(new GlideImageLoader());
         bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546799&di=5acdd6bef77d8cc7f8db4dcb14dca803&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F21%2F22%2F71g58PICBQT_1024.jpg");
@@ -75,40 +74,6 @@ public class MainActivity extends BaseActivity {
         mBanner.start();
     }
 
-    private void getScreenSizeOfDevice2() {
-        Point point = new Point();
-        getWindowManager().getDefaultDisplay().getRealSize(point);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        double x = Math.pow(point.x/ dm.xdpi, 2);
-        double y = Math.pow(point.y / dm.ydpi, 2);
-        double screenInches = Math.sqrt(x + y);
-        Log.d(TAG, "Screen inches : " + screenInches);
-    }
-
-    private void getDisplayInfomation() {
-        DisplayMetrics metric = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metric);
-        int width = metric.widthPixels;  // 屏幕宽度（像素）
-        int height = metric.heightPixels;  // 屏幕高度（像素）
-        float density = metric.density;  // 屏幕密度（0.75 / 1.0 / 1.5）
-        int densityDpi = metric.densityDpi;  // 屏幕密度DPI（120 / 160 / 240）
-        double diagonalPixels = Math.sqrt(Math.pow(width, 2)+Math.pow(height, 2)) ;
-        double screenSize = diagonalPixels/(160*density) ;
-    }
-
-    private void getScreenSizeOfDevice() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-        double x = Math.pow(width, 2);
-        double y = Math.pow(height, 2);
-        double diagonal = Math.sqrt(x + y);
-
-        int dens = dm.densityDpi;
-        double screenInches = diagonal / (double) dens;
-        Log.d(TAG, "The screenInches " + screenInches);
-    }
-
     @Override
     public void initdata() {
         initStart();
@@ -116,10 +81,10 @@ public class MainActivity extends BaseActivity {
 
     @OnClick({R.id.bt_buy, R.id.bt_prompt})
     public void onViewClicked(View view) {
-//        if (!initStatus) {
-//            ToastUtils.showToast(this, "未初始化成功");
-//            return;
-//        }
+        if (!initStatus) {
+            ToastUtils.showToast(this, "未初始化成功");
+            return;
+        }
         switch (view.getId()) {
             case R.id.bt_buy:
                 Intent intent = new Intent(this, Buy_2Activity.class);
@@ -166,9 +131,49 @@ public class MainActivity extends BaseActivity {
         }, this));
     }
 
+    /**
+     * 终端状态同步
+     */
+    private void terminalUpdate(String status) {
+        startProgressDialog(this);
+        Map sendMap = Utils.getRequestData("terminalUpdate.Req");
+        /**
+         * 01 公众号
+         02 终端
+         */
+        sendMap.put("reqType", "02");
+        /**
+         * 00 正常
+         01 设备故障
+         02 票箱故障
+         03 票箱无票
+         */
+        sendMap.put("status", status);
+        /**
+         * 如终端状态为02，03上送
+         1,2,3,4 用，号分割
+         */
+        sendMap.put("boxStatus", "1");
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
+        Observable<BaseBean> register = mApi.terminalUpdate(requestBody).compose(RxUtil.<BaseBean>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<BaseBean>() {
+            @Override
+            public void call(BaseBean baseBean) {
+                stopProgressDialog();
+                if ("00".equals(baseBean.getRespCode())) {
+                    ToastUtils.showToast(MainActivity.this, "终端状态同步成功");
+                } else {
+                    toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
+                }
+            }
+        }, this));
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-        initStart();
+//        initStart();
+        terminalUpdate("00");
     }
 }

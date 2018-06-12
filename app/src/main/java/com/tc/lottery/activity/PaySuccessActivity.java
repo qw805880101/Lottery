@@ -68,6 +68,8 @@ public class PaySuccessActivity extends BaseActivity {
 
     Runnable mTicketNumRunnable;
 
+    Runnable mBackRunnable;
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -80,12 +82,39 @@ public class PaySuccessActivity extends BaseActivity {
                     mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
                     outTicketNum++;
                 } else {
-                    mHandler.removeCallbacks(mTicketNumRunnable);
-                    mHandler.removeCallbacks(mAnimRunnable);
                     //出票完成
                     outTicketSuccess();
                 }
             }
+            if (msg.what == 2) {
+                if (backNum > 0) {
+                    mBtBack.setText("返回主界面(" + backNum + ")");
+                } else {
+                    mHandler.removeCallbacks(mBackRunnable);
+                    mBtBack.setEnabled(true);
+                    mBtBack.setText("返回主界面");
+                }
+            }
+
+        }
+    };
+
+    Handler mBackHandle = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                if (backNum > 0) {
+                    mBtBack.setText("返回主界面(" + backNum + ")");
+                } else {
+                    mHandler.removeCallbacks(mBackRunnable);
+                    mBtBack.setEnabled(true);
+                    mBtBack.setText("返回主界面");
+                    startActivity(new Intent(PaySuccessActivity.this, MainActivity.class));
+                    finish();
+                }
+            }
+
         }
     };
 
@@ -134,12 +163,16 @@ public class PaySuccessActivity extends BaseActivity {
      * 出票完成
      */
     private void outTicketSuccess() {
+        mHandler.removeCallbacks(mTicketNumRunnable);
+        mHandler.removeCallbacks(mAnimRunnable);
+        successView.setVisibility(View.VISIBLE);
         mTxtOutTicketNum.setVisibility(View.GONE);
         mLinAllLottery.setVisibility(View.VISIBLE);
         mLinBt.setVisibility(View.VISIBLE);
 
+        startBackNum();
         mTxtAllNum.setText("" + lotteryNum);
-//        outTicket("1");
+        outTicket("1");
     }
 
     /**
@@ -232,4 +265,30 @@ public class PaySuccessActivity extends BaseActivity {
         mHandler.postDelayed(mTicketNumRunnable, 1500);
     }
 
+    int backNum = 90;
+
+    /**
+     * 开始返回倒计时
+     */
+    private void startBackNum() {
+        backNum = 90;
+        mBtBack.setEnabled(false);
+        mBtBack.setText("返回主界面(" + backNum + ")");
+        mBackRunnable = new Runnable() {
+            @Override
+            public void run() {
+                backNum--;
+                mBackHandle.sendEmptyMessage(0);
+                mBackHandle.postDelayed(this, 1000);
+            }
+        };
+        mBackHandle.postDelayed(mBackRunnable, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBackHandle.removeCallbacks(mBackRunnable);
+        mBackHandle.removeMessages(0);
+    }
 }

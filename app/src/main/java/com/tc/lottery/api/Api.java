@@ -520,4 +520,13 @@ public interface Api {
     @POST("front/")
     Observable<BaseBean> outTicket(@Body RequestBody file);
 
+    /**
+     * 终端状态同步
+     *
+     * @param file
+     * @return
+     */
+    @POST("front/")
+    Observable<BaseBean> terminalUpdate(@Body RequestBody file);
+
 }
