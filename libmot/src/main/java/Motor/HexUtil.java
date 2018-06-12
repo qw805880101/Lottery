@@ -180,12 +180,12 @@ public class HexUtil
 
     public static void main(String[] args)
     {
-        String srcStr = "待转换字符串";
-        String encodeStr = encodeHexStr(srcStr.getBytes());
-        String decodeStr = new String(decodeHex(encodeStr.toCharArray()));
+        String srcStr = "51 A5 01 01 03 E3 01 01 9D 51 3A";
+//        String encodeStr = encodeHexStr(srcStr.getBytes());
+//        String decodeStr = new String();
         System.out.println("转换前：" + srcStr);
-        System.out.println("转换后：" + encodeStr);
-        System.out.println("还原后：" + decodeStr);
+        System.out.println("转换后：" + decodeHex(srcStr.toCharArray()));
+//        System.out.println("还原后：" + decodeStr);
     }
 
 

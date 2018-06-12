@@ -99,7 +99,7 @@ public class MotorSlaveS32
 
             default:
                 brets = new byte[]{cCmd};
-                    break;
+                break;
         }
         return brets;
     }
@@ -202,13 +202,13 @@ public class MotorSlaveS32
                     ntotallen = ndatlen+8;
                     if(ndatlen>0 && (istart+ntotallen)<bData.length+1)
                     {
-          //              Log.i("GetValidBytes", "GetValidBytes:fail c "+String.valueOf(istart));
+                        //              Log.i("GetValidBytes", "GetValidBytes:fail c "+String.valueOf(istart));
                         if( bData[istart] == (byte) 0x51
                                 && ((byte)(bData[istart+1]& 0xff) == (byte) 0xa5)
                                 && ((bData[istart+3] & 0xff) == nFID)
                                 && ((byte)(bData[istart+ntotallen - 2]& 0xff) ==(byte)0x51)
                                 && ((byte)(bData[istart+ntotallen - 1]& 0xff) == (byte)0x3a)
-                        )
+                                )
                         {
                             bfind = true;
                             break;
@@ -218,14 +218,14 @@ public class MotorSlaveS32
                             Log.i("GetValidBytes", "GetValidBytes:fail a");
                             if( bData[istart] == (byte) 0x51)
                                 Log.i("GetValidBytes", "GetValidBytes:fail b");
-                                   if ((byte)(bData[istart+1]& 0xff) == (byte) 0xa5)
-                                       Log.i("GetValidBytes", "GetValidBytes:fail c" );
+                            if ((byte)(bData[istart+1]& 0xff) == (byte) 0xa5)
+                                Log.i("GetValidBytes", "GetValidBytes:fail c" );
                             if ((bData[istart+3] & 0xff) == nFID)
                                 Log.i("GetValidBytes", "GetValidBytes:fail d");
-                                if ((byte)(bData[istart+ntotallen - 2]& 0xff) ==(byte)0x51)
-                                    Log.i("GetValidBytes", "GetValidBytes:fail e");
-                                    if ((byte)(bData[istart+ntotallen - 1]& 0xff) == (byte)0x3a)
-                                        Log.i("GetValidBytes", "GetValidBytes:fail f");
+                            if ((byte)(bData[istart+ntotallen - 2]& 0xff) ==(byte)0x51)
+                                Log.i("GetValidBytes", "GetValidBytes:fail e");
+                            if ((byte)(bData[istart+ntotallen - 1]& 0xff) == (byte)0x3a)
+                                Log.i("GetValidBytes", "GetValidBytes:fail f");
                         }
                     }
                 }
@@ -358,9 +358,8 @@ public class MotorSlaveS32
         boolean bret = false;
         try
         {
-//            byte[] bcmds =  GetCommandDataS(mFID, MotorSlaveS32.CMD_TicketOut, nMid, num, nTicketLen,0);
+            byte[] bcmds =  GetCommandDataS(mFID, MotorSlaveS32.CMD_TicketOut, nMid, num, nTicketLen,0);
             byte CMD_MoveBack = (byte) 0xE7;
-            byte[] bcmds =  GetCommandDataS(mFID, CMD_MoveBack, nMid, 0, 0,0);
             sHexIn.append( HexUtil.byte2hex(bcmds));
             //LogUtil.d("cut send：" +sHexIn);
             byte[] bcmdrec =  SendDataS(mFID, bcmds, 15000);
@@ -369,7 +368,7 @@ public class MotorSlaveS32
             //LogUtil.d("cut recv：" +sHexRecv);
 
             boolean btook =  CheckResult(bcmdrec);
-           // LogUtil.d("cut res：" + String.valueOf(btook));
+            // LogUtil.d("cut res：" + String.valueOf(btook));
 
             bret = btook;
         }

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import Motor.HexUtil;
+import Motor.MotorSlaveS32;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -55,9 +59,15 @@ public class PaySuccessActivity extends BaseActivity {
     ImageView imageTicket;
     @BindView(R.id.success_view)
     SuccessView successView;
+    @BindView(R.id.lin_tips)
+    LinearLayout linTips;
 
+    private boolean mBusy = false; //标记位 判断设备是否被占用运行
+    protected int mIDCur = 1; //暂不明用处
+    protected int mTicketLen = 102;//暂不明用处
+    protected MotorSlaveS32 mMotorSlave = null; //调用设备出票
 
-    private int lotteryNum = 5; //彩票数量
+    private int lotteryNum = 2; //彩票数量
     private int outTicketNum = 1; //已出数量
 
     private TranslateAnimation anim; //彩票动画
@@ -80,7 +90,7 @@ public class PaySuccessActivity extends BaseActivity {
             if (msg.what == 1) {
                 if (outTicketNum <= lotteryNum) {
                     mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
-                    outTicketNum++;
+                    onTransOne(mIDCur);
                 } else {
                     //出票完成
                     outTicketSuccess();
@@ -130,7 +140,7 @@ public class PaySuccessActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
+        mMotorSlave = MotorSlaveS32.getInstance();
     }
 
     @Override
@@ -142,7 +152,8 @@ public class PaySuccessActivity extends BaseActivity {
         mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
 
         startAnim();
-        startTicketNum();
+//        startTicketNum();
+        onTransOne(mIDCur);
     }
 
     @OnClick({R.id.bt_how, R.id.bt_back})
@@ -169,10 +180,10 @@ public class PaySuccessActivity extends BaseActivity {
         mTxtOutTicketNum.setVisibility(View.GONE);
         mLinAllLottery.setVisibility(View.VISIBLE);
         mLinBt.setVisibility(View.VISIBLE);
-
+        linTips.setVisibility(View.GONE);
         startBackNum();
         mTxtAllNum.setText("" + lotteryNum);
-        outTicket("1");
+//        outTicket("1");
     }
 
     /**
@@ -291,4 +302,61 @@ public class PaySuccessActivity extends BaseActivity {
         mBackHandle.removeCallbacks(mBackRunnable);
         mBackHandle.removeMessages(0);
     }
+
+    /**
+     * 出票方法
+     *
+     * @param nID
+     */
+    private void onTransOne(int nID) {
+        if (mBusy)
+            return;
+        mIDCur = nID;
+        new Thread(transmitoneS).start();
+    }
+
+    Handler mOutTicketHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String result = (String) msg.obj;
+            String[] bytes = result.split(" ");
+            outTicketNum++;
+            if (bytes[7].equals("01")) { //出票成功
+                mHandler.sendEmptyMessage(1);
+            }
+            if (bytes[7].equals("00")) { //出票失败
+                ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");
+            }
+        }
+    };
+
+    /**
+     * 出票线程
+     */
+    Runnable transmitoneS = new Runnable() {
+        @Override
+        public void run() {
+            //runonce();
+
+            mBusy = true;
+            try {
+                StringBuilder s1 = new StringBuilder();
+                StringBuilder s2 = new StringBuilder();
+                mMotorSlave.TransOneSimpleS(mIDCur, mTicketLen, s1, s2, 1);
+                Log.d(TAG, "发送 ----" + s1.toString());
+                Log.d(TAG, "接收 " + s2.toString());
+
+                Message message = new Message();
+                message.obj = s2.toString();
+                message.what = 0;
+                mOutTicketHandler.sendMessage(message);
+//                SendMsg(1, "ssend", s1.toString());
+//                SendMsg(1, "ssend", s2.toString());
+            } catch (Exception exp) {
+
+            }
+            mBusy = false;
+        }
+    };
 }

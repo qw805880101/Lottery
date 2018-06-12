@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.tc.lottery.R;
 import com.tc.lottery.util.QRCodeUtil;
 
+import Motor.MotorSlaveS32;
+
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "test";
@@ -27,7 +29,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mBusy = false; //标记位 判断设备是否被占用运行
     protected int mIDCur = 1; //暂不明用处
     protected int mTicketLen = 102;//暂不明用处
-//    protected MotorSlaveS32 mMotorSlave = null;
+    protected MotorSlaveS32 mMotorSlave = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         etNum = findViewById(R.id.et_num);
 
-//        mMotorSlave = MotorSlaveS32.getInstance();
+        mMotorSlave = MotorSlaveS32.getInstance();
     }
 
     @Override
@@ -91,7 +93,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 StringBuilder s1 = new StringBuilder();
                 StringBuilder s2 = new StringBuilder();
-//                mMotorSlave.TransOneSimpleS(mIDCur, mTicketLen, s1, s2, num);
+                mMotorSlave.TransOneSimpleS(mIDCur, mTicketLen, s1, s2, num);
                 Log.d(TAG, "发送  " + s1.toString());
                 Log.d(TAG, "接收 " + s2.toString());
 
