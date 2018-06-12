@@ -67,8 +67,8 @@
                 android:id="@+id/success_view"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:visibility="gone"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
@@ -79,6 +79,42 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="347dp"
             android:src="@mipmap/buy_step2_mask" />
+
+        <LinearLayout
+            android:id="@+id/lin_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="233.3dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="98.6dp"
+                android:layout_height="98.6dp"
+                android:src="@mipmap/tips" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="请及时取走您的彩票！"
+                android:textColor="@color/txt_color_333333"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="购买多张彩票时，取走当前彩票设备才能继续出票。"
+                android:textColor="@color/txt_color_333333"
+                android:textSize="16dp" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/lin_bt"
