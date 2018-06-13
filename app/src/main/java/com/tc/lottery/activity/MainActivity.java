@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.lottery.BuildConfig;
+import com.tc.lottery.MyApplication;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
 import com.tc.lottery.bean.BaseBean;
@@ -62,10 +63,10 @@ public class MainActivity extends BaseActivity {
 
         //设置图片加载器
         mBanner.setImageLoader(new GlideImageLoader());
-        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546799&di=5acdd6bef77d8cc7f8db4dcb14dca803&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F21%2F22%2F71g58PICBQT_1024.jpg");
-        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546798&di=34296c471267e8b590416f2dbd464a9d&imgtype=0&src=http%3A%2F%2Fpic2.16pic.com%2F00%2F07%2F67%2F16pic_767824_b.jpg");
-        //设置图片集合
-        mBanner.setImages(bannerImage);
+//        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546799&di=5acdd6bef77d8cc7f8db4dcb14dca803&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F21%2F22%2F71g58PICBQT_1024.jpg");
+//        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526883546798&di=34296c471267e8b590416f2dbd464a9d&imgtype=0&src=http%3A%2F%2Fpic2.16pic.com%2F00%2F07%2F67%2F16pic_767824_b.jpg");
+//        //设置图片集合
+//        mBanner.setImages(bannerImage);
         //设置指示器位置（当banner模式中有指示器时）
         mBanner.setIndicatorGravity(BannerConfig.CENTER);
         //设置轮播时间
@@ -82,14 +83,15 @@ public class MainActivity extends BaseActivity {
     @OnClick({R.id.bt_buy, R.id.bt_prompt})
     public void onViewClicked(View view) {
         if (!initStatus) {
-            ToastUtils.showToast(this, "未初始化成功");
+            ToastUtils.showToast(this, "未初始化成功, 请重试");
+            initStart();
             return;
         }
         switch (view.getId()) {
             case R.id.bt_buy:
                 Intent intent = new Intent(this, Buy_2Activity.class);
-                intent.putExtra("TerminalLotteryInfo", (Serializable) initInfo.getTerminalLotteryDtos());
-                intent.putExtra("TerminalLotteryStatus", initInfo.getTerminalStatus());
+//                intent.putExtra("TerminalLotteryInfo", (Serializable) initInfo.getTerminalLotteryDtos());
+//                intent.putExtra("TerminalLotteryStatus", initInfo.getTerminalStatus());
                 startActivity(intent);
                 break;
             case R.id.bt_prompt:
@@ -113,6 +115,13 @@ public class MainActivity extends BaseActivity {
                 initInfo = baseBean;
                 if ("00".equals(initInfo.getRespCode())) {
 //                        ToastUtils.showToast(MainActivity.this, "初始化成功");
+                    bannerImage.add(initInfo.getImg1());
+                    bannerImage.add(initInfo.getImg2());
+                    bannerImage.add(initInfo.getImg3());
+                    //设置图片集合
+                    mBanner.setImages(bannerImage);
+                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
+                    MyApplication.terminalLotteryStatus = initInfo.getTerminalStatus();
                     if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
                         UpdateAppUtils.from(MainActivity.this)
                                 .serverVersionName(initInfo.getVersion()) //服务器versionName
@@ -148,7 +157,7 @@ public class MainActivity extends BaseActivity {
          02 票箱故障
          03 票箱无票
          */
-        sendMap.put("status", status);
+        sendMap.put("status", MyApplication.status);
         /**
          * 如终端状态为02，03上送
          1,2,3,4 用，号分割

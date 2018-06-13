@@ -490,7 +490,7 @@ public interface Api {
 //    @POST("xxx")
 //    Observable<Object> test(@Body RequestBody file);
 
-    @POST("front/")
+    @POST("mpi/")
     Observable<InitInfo> init(@Body RequestBody file);
 
     /**
@@ -499,7 +499,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("front/")
+    @POST("mpi/")
     Observable<OrderInfo> prepOrder(@Body RequestBody file);
 
     /**
@@ -508,7 +508,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("front/")
+    @POST("mpi/")
     Observable<OrderInfo> queryOrder(@Body RequestBody file);
 
     /**
@@ -517,8 +517,8 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("front/")
-    Observable<BaseBean> outTicket(@Body RequestBody file);
+    @POST("mpi/")
+    Observable<InitInfo> outTicket(@Body RequestBody file);
 
     /**
      * 终端状态同步
@@ -526,7 +526,7 @@ public interface Api {
      * @param file
      * @return
      */
-    @POST("front/")
+    @POST("mpi/")
     Observable<BaseBean> terminalUpdate(@Body RequestBody file);
 
 }

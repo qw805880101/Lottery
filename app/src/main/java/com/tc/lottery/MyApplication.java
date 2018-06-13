@@ -6,7 +6,10 @@ import android.os.StrictMode;
 import com.psylife.wrmvplibrary.BaseApplication;
 import com.psylife.wrmvplibrary.WRCoreApp;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.tc.lottery.bean.TerminalLotteryInfo;
 import com.tencent.smtt.sdk.QbSdk;
+
+import java.util.List;
 
 /**
  * Created by admin on 2017/8/30.
@@ -23,13 +26,34 @@ public class MyApplication extends BaseApplication {
 
     public static int GOODS_NUM = 0;
 
-//    public static String URL = "https://www.new-orator.com/gateway/";
-    public static String URL = "https://dev.new-orator.com/gateway/";
-//    public static String URL = "http://172.21.10.69:8998/cp-pay/";
+    //    public static String URL = "https://www.new-orator.com/gateway/";
+//    public static String URL = "https://dev.new-orator.com/gateway/";
+    public static String URL = "http://172.21.10.69:8998/cp-pay/";
 
     public static String USER_ID = "26";
 
     public static String LEVEL = "0";
+
+    /**
+     * 00 设备正常
+     * 01 设备卡票
+     * 02 票未取走
+     * 03 传感器故障
+     * 04 电机故障
+     */
+    public static String status; //设备状态
+
+    public static List<TerminalLotteryInfo> mTerminalLotteryInfos; //初始化返回的票种列表
+
+    /**
+     * 设备状态
+     * 0 待激活
+     * 1 已激活
+     * 2 待维修
+     * 3 已暂停
+     * 4 设备无票
+     */
+    public static String terminalLotteryStatus; //设备状态
 
     @Override
     public void onCreate() {

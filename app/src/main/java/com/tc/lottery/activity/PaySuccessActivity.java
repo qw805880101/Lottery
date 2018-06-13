@@ -19,22 +19,26 @@ import android.widget.TextView;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
+import com.tc.lottery.MyApplication;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
 import com.tc.lottery.bean.BaseBean;
+import com.tc.lottery.bean.InitInfo;
+import com.tc.lottery.bean.OrderInfo;
 import com.tc.lottery.bean.TerminalLotteryInfo;
 import com.tc.lottery.bean.UpdateOutTicketStatusInfo;
 import com.tc.lottery.util.Utils;
 import com.tc.lottery.view.SuccessView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import Motor.HexUtil;
 import Motor.MotorSlaveS32;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -42,6 +46,10 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public class PaySuccessActivity extends BaseActivity {
+
+    public final static String QUERY_STATUS = "queryStatus"; //查询出票机头状态
+    public final static String OUT_TICKET = "outTicket"; //出票状态
+    public final static String QUERY_FAULT = "queryFault"; //查询设备故障
 
     @BindView(R.id.txt_all_num)
     TextView mTxtAllNum;
@@ -90,7 +98,7 @@ public class PaySuccessActivity extends BaseActivity {
             if (msg.what == 1) {
                 if (outTicketNum <= lotteryNum) {
                     mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
-                    onTransOne(mIDCur);
+                    queryStatus(mIDCur);
                 } else {
                     //出票完成
                     outTicketSuccess();
@@ -183,7 +191,7 @@ public class PaySuccessActivity extends BaseActivity {
         linTips.setVisibility(View.GONE);
         startBackNum();
         mTxtAllNum.setText("" + lotteryNum);
-//        outTicket("1");
+        outTicket("1");
     }
 
     /**
@@ -204,20 +212,22 @@ public class PaySuccessActivity extends BaseActivity {
         sendMap.put("merOrderId", mUpdateOutTicketStatusInfo.getMerOrderId());
         sendMap.put("terminalLotteryDtos", lotteryInfos);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean> register = mApi.outTicket(requestBody).compose(RxUtil.<BaseBean>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean>() {
+        Observable<InitInfo> register = mApi.outTicket(requestBody).compose(RxUtil.<InitInfo>rxSchedulerHelper());
+        mRxManager.add(register.subscribe(new Action1<InitInfo>() {
             @Override
-            public void call(BaseBean baseBean) {
+            public void call(InitInfo initInfo) {
 //                stopProgressDialog();
-                if (baseBean.getRespCode().equals("00")) {
+                if (initInfo.getRespCode().equals("00")) {
 //                    surplus -= lotteryNum;
 //                    if (surplus == 0) {
 //                        mImageSoldOut.setVisibility(View.VISIBLE);
 //                    }
 //                    mTxtSurplusNum.setText("剩余 " + surplus + " 张");
+                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
+                    queryFault(mIDCur);
                     LogUtil.d("状态更新成功");
                 } else {
-                    toastMessage(baseBean.getRespCode(), baseBean.getRespDesc());
+                    toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
                 }
             }
         }, this));
@@ -315,18 +325,84 @@ public class PaySuccessActivity extends BaseActivity {
         new Thread(transmitoneS).start();
     }
 
+    /**
+     * 查询状态
+     *
+     * @param nID
+     */
+    private void queryStatus(int nID) {
+        if (mBusy)
+            return;
+        mIDCur = nID;
+        new Thread(ReadStatusRunnable).start();
+    }
+
+    /**
+     * 查询设备故障
+     *
+     * @param nID
+     */
+    private void queryFault(int nID) {
+        if (mBusy)
+            return;
+        mIDCur = nID;
+        new Thread(QueryFaultRunnable).start();
+    }
+
     Handler mOutTicketHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            String result = (String) msg.obj;
-            String[] bytes = result.split(" ");
-            outTicketNum++;
-            if (bytes[7].equals("01")) { //出票成功
-                mHandler.sendEmptyMessage(1);
+            Bundle bundle = msg.getData();
+            /**
+             * 出票命令返回
+             */
+            if (OUT_TICKET.equals(bundle.getString("type"))) {
+                String[] results = bundle.getStringArray("result");
+                outTicketNum++;
+                if (results[7].equals("01")) { //出票成功
+                    mHandler.sendEmptyMessage(1);
+                }
+                if (results[7].equals("00")) { //出票失败
+                    ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");
+                }
             }
-            if (bytes[7].equals("00")) { //出票失败
-                ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");
+
+            /**
+             * 查询状态命令返回
+             */
+            if (QUERY_STATUS.equals(bundle.getString("type"))) {
+                if (bundle.getBoolean("2")) {
+                    /* 掉票处无票， 执行出票命令 */
+                    onTransOne(mIDCur);
+                } else {
+                    /* 掉票处有票，执行设备状态检查命令 */
+                    queryStatus(mIDCur);
+                }
+            }
+
+            /**
+             * 查询故障命令返回
+             */
+            if (QUERY_FAULT.equals(bundle.getString("type"))) {
+                String status = bundle.getString("result");
+                if ("00".equals(status)) {
+                    //设备正常
+                    MyApplication.status = "00";
+                } else if ("01".equals(status)) {
+                    //设备卡票
+                    MyApplication.status = "01";
+                } else if ("02".equals(status)) {
+                    //票未取走
+                    MyApplication.status = "02";
+                } else if ("03".equals(status)) {
+                    //传感器故障
+                    MyApplication.status = "03";
+                } else if ("04".equals(status)) {
+                    //电机故障
+                    MyApplication.status = "04";
+                }
+
             }
         }
     };
@@ -338,7 +414,6 @@ public class PaySuccessActivity extends BaseActivity {
         @Override
         public void run() {
             //runonce();
-
             mBusy = true;
             try {
                 StringBuilder s1 = new StringBuilder();
@@ -347,16 +422,77 @@ public class PaySuccessActivity extends BaseActivity {
                 Log.d(TAG, "发送 ----" + s1.toString());
                 Log.d(TAG, "接收 " + s2.toString());
 
-                Message message = new Message();
-                message.obj = s2.toString();
-                message.what = 0;
-                mOutTicketHandler.sendMessage(message);
-//                SendMsg(1, "ssend", s1.toString());
-//                SendMsg(1, "ssend", s2.toString());
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("result", s2.toString().split(" "));
+                sendMsg(bundle, OUT_TICKET);
             } catch (Exception exp) {
 
             }
             mBusy = false;
         }
     };
+
+    /**
+     * 查询机头状态
+     */
+    Runnable ReadStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mBusy = true;
+            try {
+                StringBuilder s1 = new StringBuilder();
+                StringBuilder s2 = new StringBuilder();
+                HashMap<Integer, Boolean> status = mMotorSlave.ReadStatus(mIDCur, s1, s2);
+                Log.d(TAG, "发送 ----" + s1.toString());
+                Log.d(TAG, "接收 " + s2.toString());
+
+                Bundle bundle = new Bundle();
+                for (Entry<Integer, Boolean> e : status.entrySet()) {
+                    bundle.putBoolean("" + e.getKey(), e.getValue());
+                }
+                sendMsg(bundle, QUERY_STATUS);
+            } catch (Exception exp) {
+
+            }
+            mBusy = false;
+        }
+    };
+
+    /**
+     * 查询设备故障
+     */
+    Runnable QueryFaultRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mBusy = true;
+            try {
+                StringBuilder s1 = new StringBuilder();
+                StringBuilder s2 = new StringBuilder();
+                String status = mMotorSlave.queryFault(mIDCur, s1, s2);
+                Log.d(TAG, "发送 ----" + s1.toString());
+                Log.d(TAG, "接收 " + s2.toString());
+
+                Bundle bundle = new Bundle();
+                bundle.putString("result", status);
+                sendMsg(bundle, QUERY_FAULT);
+            } catch (Exception exp) {
+
+            }
+            mBusy = false;
+        }
+    };
+
+    /**
+     * 回调参数
+     *
+     * @param bundle
+     * @param type
+     */
+    private void sendMsg(Bundle bundle, String type) {
+        Message message = new Message();
+        bundle.putString("type", type);
+        message.setData(bundle);
+        mOutTicketHandler.sendMessage(message);
+    }
+
 }

@@ -31,7 +31,7 @@ public class CountTimer extends CountDownTimer {
     // 计时过程显示
     @Override
     public void onTick(long millisUntilFinished) {
-        LogUtil.d("计时中：" + (a++));
+//        LogUtil.d("计时中：" + (a++));
     }
 
     int a = 1;

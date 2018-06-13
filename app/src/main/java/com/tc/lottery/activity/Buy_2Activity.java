@@ -17,9 +17,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.psylife.wrmvplibrary.utils.timeutils.DateUtil;
+import com.tc.lottery.MyApplication;
 import com.tc.lottery.R;
 import com.tc.lottery.base.BaseActivity;
 import com.tc.lottery.bean.OrderInfo;
@@ -127,11 +129,7 @@ public class Buy_2Activity extends BaseActivity {
     @BindView(R.id.txt_back)
     TextView mTxtBack;
 
-    private String terminalLotteryStatus; //票箱状态
-
     private TerminalLotteryInfo mTerminalLotteryInfo; //第一条票种
-
-    List<TerminalLotteryInfo> mTerminalLotteryInfos = new ArrayList<>(); //初始化返回的票种列表
 
     private int lotteryNum = 1; //彩票票数
     private double lotteryTotalAmt = 0; //彩票总金额
@@ -144,8 +142,9 @@ public class Buy_2Activity extends BaseActivity {
     private Handler handler = new Handler();
     private Runnable queryRunnable; //查询订单交易状态线程
 
-    /* 出订单动画 */
-    private TranslateAnimation orderAnim;
+    private boolean isCloseOrder = false; //是否点击关闭订单
+
+    private int closeQueryNum = 0; //点击关闭时的查询订单次数
 
     @Override
     public View getTitleView() {
@@ -165,20 +164,19 @@ public class Buy_2Activity extends BaseActivity {
 
     @Override
     public void initdata() {
-        Intent intent = this.getIntent();
-        mTerminalLotteryInfos = (List<TerminalLotteryInfo>) intent.getSerializableExtra("TerminalLotteryInfo");
-        terminalLotteryStatus = intent.getStringExtra("TerminalLotteryStatus");
+//        Intent intent = this.getIntent();
+//        terminalLotteryStatus = intent.getStringExtra("TerminalLotteryStatus");
 
 //        mTxtTerminalStatus.setText("设备状态：" + getTerminalStatus(terminalLotteryStatus));
 //        mTxtLotteryAmt.setText("单价" + mTerminalLotteryInfos.get(0).getLotteryAmt());
 
-        mTerminalLotteryInfo = mTerminalLotteryInfos.get(0);
+        mTerminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
 
         surplus = Integer.parseInt(mTerminalLotteryInfo.getSurplus());
 
         mTxtSurplusNum.setText("剩余 " + surplus + " 张");
 
-        if (mTerminalLotteryInfo.getSurplus().equals("0")) {
+        if (mTerminalLotteryInfo.getSurplus().equals("0") && "4".equals(MyApplication.terminalLotteryStatus)) {
             mImageSoldOut.setVisibility(View.VISIBLE);
         }
 
@@ -188,12 +186,16 @@ public class Buy_2Activity extends BaseActivity {
     @OnClick({R.id.bt_add, R.id.bt_reduce, R.id.bt_add_five, R.id.bt_add_ten, R.id.bt_clear
             , R.id.image_bt_wx_pay, R.id.image_bt_zfb_pay, R.id.txt_back})
     public void onViewClicked(View view) {
+        if (!"1".equals(MyApplication.terminalLotteryStatus)) {
+            ToastUtils.showToast(this, getStatus(MyApplication.terminalLotteryStatus));
+            return;
+        }
         switch (view.getId()) {
             case R.id.bt_add:
                 updateLotteryNum(1);
                 break;
             case R.id.bt_reduce:
-                if (lotteryNum == 1) {
+                if (lotteryNum <= 1) {
                     return;
                 }
                 updateLotteryNum(-1);
@@ -222,9 +224,38 @@ public class Buy_2Activity extends BaseActivity {
                 prepOrder("01");
                 break;
             case R.id.txt_back:
+                closeQueryNum = queryNum;
+                isCloseOrder = true;
                 startCloseAnim();
+                mHandler.removeCallbacks(mBackRunnable);
+//                handler.removeCallbacks(queryRunnable);
+                mTxtBack.setText("关闭");
                 break;
         }
+    }
+
+    /**
+     * 设备状态
+     * 0 待激活
+     * 1 已激活
+     * 2 待维修
+     * 3 已暂停
+     * 4 设备无票
+     */
+    private String getStatus(String type) {
+        if ("0".equals(type)) {
+            return "设备待激活";
+        }
+        if ("2".equals(type)) {
+            return "设备待维修";
+        }
+        if ("3".equals(type)) {
+            return "设备已暂停";
+        }
+        if ("4".equals(type)) {
+            return "设备无票";
+        }
+        return "设备故障";
     }
 
     /**
@@ -310,7 +341,7 @@ public class Buy_2Activity extends BaseActivity {
      */
     private void prepOrder(final String payType) {
         startProgressDialog(this);
-        TerminalLotteryInfo terminalLotteryInfo = mTerminalLotteryInfos.get(0);
+        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
         terminalLotteryInfo.setNum("" + lotteryNum);
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
@@ -355,7 +386,7 @@ public class Buy_2Activity extends BaseActivity {
 //                stopProgressDialog();
                 if (orderInfo.getRespCode().equals("00")) {
                     if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
-                        handler.removeCallbacks(queryRunnable);
+                        orderHandler.removeCallbacks(queryRunnable);
                         handler.removeMessages(0);
                         Intent intent = new Intent(Buy_2Activity.this, PaySuccessActivity.class);
                         intent.putExtra("lotteryNum", lotteryNum);
@@ -363,6 +394,20 @@ public class Buy_2Activity extends BaseActivity {
                         startActivity(intent);
                         finish();
                     }
+                    /* 订单状态未支付，并且点击关闭按钮，且关闭后已执行两次订单查询 */
+                    if ("0".equals(orderInfo.getOrderStatus()) && isCloseOrder && queryNum >= (closeQueryNum + 2)) {
+                        isCloseOrder = false;
+                        orderHandler.removeCallbacks(queryRunnable);
+                        handler.removeMessages(0);
+//                        startCloseAnim();
+                    }
+
+                    if ("0".equals(orderInfo.getOrderStatus()) && queryNum >= 31) {
+                        orderHandler.removeCallbacks(queryRunnable);
+                        handler.removeMessages(0);
+//                        startCloseAnim();
+                    }
+
                 } else {
                     toastMessage(orderInfo.getRespCode(), orderInfo.getRespDesc());
                 }
@@ -375,7 +420,7 @@ public class Buy_2Activity extends BaseActivity {
      */
     private UpdateOutTicketStatusInfo outTicket() {
         UpdateOutTicketStatusInfo updateOutTicketStatusInfo = new UpdateOutTicketStatusInfo();
-        TerminalLotteryInfo terminalLotteryInfo = mTerminalLotteryInfos.get(0);
+        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
         terminalLotteryInfo.setNum("" + lotteryNum);
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
@@ -384,6 +429,7 @@ public class Buy_2Activity extends BaseActivity {
         return updateOutTicketStatusInfo;
     }
 
+    private Handler orderHandler = new Handler();
     /**
      * 开始查询订单交易状态
      */
@@ -393,10 +439,11 @@ public class Buy_2Activity extends BaseActivity {
             public void run() {
                 //查询交易订单，以实现每两五秒实现一次
                 queryOrder();
-                handler.postDelayed(this, 3000);
+                queryNum++;
+                orderHandler.postDelayed(this, 3000);
             }
         };
-        handler.postDelayed(queryRunnable, 7000);
+        orderHandler.postDelayed(queryRunnable, 7000);
     }
 
     /**
@@ -484,10 +531,11 @@ public class Buy_2Activity extends BaseActivity {
             if (msg.what == 0) {
                 if (backNum > 0) {
                     mTxtBack.setText("关闭(" + backNum + ")");
+                    if (backNum == 75)
+                        mTxtBack.setEnabled(true);
                 } else {
                     mHandler.removeCallbacks(mBackRunnable);
-                    handler.removeCallbacks(queryRunnable);
-                    mTxtBack.setEnabled(true);
+//                    handler.removeCallbacks(queryRunnable);
                     mTxtBack.setText("关闭");
                     startCloseAnim();
                 }
@@ -507,12 +555,14 @@ public class Buy_2Activity extends BaseActivity {
     }
 
     int backNum = 90;
+    int queryNum = 0; //查询订单计数
 
     /**
      * 开始返回倒计时
      */
     private void startBackNum() {
         backNum = 90;
+        queryNum = 0;
         mTxtBack.setEnabled(false);
         mTxtBack.setText("关闭(90)");
         mBackRunnable = new Runnable() {
