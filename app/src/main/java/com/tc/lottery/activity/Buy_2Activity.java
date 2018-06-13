@@ -128,6 +128,12 @@ public class Buy_2Activity extends BaseActivity {
      */
     @BindView(R.id.txt_back)
     TextView mTxtBack;
+    /**
+     * 返回主界面
+     */
+    @BindView(R.id.bt_back)
+    Button btBackMain;
+
 
     private TerminalLotteryInfo mTerminalLotteryInfo; //第一条票种
 
@@ -139,7 +145,6 @@ public class Buy_2Activity extends BaseActivity {
 
     private Bitmap bitCode; //支付二维码
 
-    private Handler handler = new Handler();
     private Runnable queryRunnable; //查询订单交易状态线程
 
     private boolean isCloseOrder = false; //是否点击关闭订单
@@ -184,7 +189,7 @@ public class Buy_2Activity extends BaseActivity {
     }
 
     @OnClick({R.id.bt_add, R.id.bt_reduce, R.id.bt_add_five, R.id.bt_add_ten, R.id.bt_clear
-            , R.id.image_bt_wx_pay, R.id.image_bt_zfb_pay, R.id.txt_back})
+            , R.id.image_bt_wx_pay, R.id.image_bt_zfb_pay, R.id.txt_back, R.id.bt_back})
     public void onViewClicked(View view) {
         if (!"1".equals(MyApplication.terminalLotteryStatus)) {
             ToastUtils.showToast(this, getStatus(MyApplication.terminalLotteryStatus));
@@ -227,9 +232,13 @@ public class Buy_2Activity extends BaseActivity {
                 closeQueryNum = queryNum;
                 isCloseOrder = true;
                 startCloseAnim();
-                mHandler.removeCallbacks(mBackRunnable);
+                mBackNumHandler.removeCallbacks(mBackRunnable);
 //                handler.removeCallbacks(queryRunnable);
                 mTxtBack.setText("关闭");
+                break;
+            case R.id.bt_back:
+                startActivity(new Intent(this, MainActivity.class));
+                this.finish();
                 break;
         }
     }
@@ -387,7 +396,7 @@ public class Buy_2Activity extends BaseActivity {
                 if (orderInfo.getRespCode().equals("00")) {
                     if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
                         orderHandler.removeCallbacks(queryRunnable);
-                        handler.removeMessages(0);
+                        mBackNumHandler.removeMessages(0);
                         Intent intent = new Intent(Buy_2Activity.this, PaySuccessActivity.class);
                         intent.putExtra("lotteryNum", lotteryNum);
                         intent.putExtra("outTicket", outTicket());
@@ -398,13 +407,13 @@ public class Buy_2Activity extends BaseActivity {
                     if ("0".equals(orderInfo.getOrderStatus()) && isCloseOrder && queryNum >= (closeQueryNum + 2)) {
                         isCloseOrder = false;
                         orderHandler.removeCallbacks(queryRunnable);
-                        handler.removeMessages(0);
+                        mBackNumHandler.removeMessages(0);
 //                        startCloseAnim();
                     }
 
                     if ("0".equals(orderInfo.getOrderStatus()) && queryNum >= 31) {
                         orderHandler.removeCallbacks(queryRunnable);
-                        handler.removeMessages(0);
+                        mBackNumHandler.removeMessages(0);
 //                        startCloseAnim();
                     }
 
@@ -524,7 +533,7 @@ public class Buy_2Activity extends BaseActivity {
 
     Runnable mBackRunnable;
 
-    Handler mHandler = new Handler() {
+    Handler mBackNumHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -534,7 +543,7 @@ public class Buy_2Activity extends BaseActivity {
                     if (backNum == 75)
                         mTxtBack.setEnabled(true);
                 } else {
-                    mHandler.removeCallbacks(mBackRunnable);
+                    mBackNumHandler.removeCallbacks(mBackRunnable);
 //                    handler.removeCallbacks(queryRunnable);
                     mTxtBack.setText("关闭");
                     startCloseAnim();
@@ -569,16 +578,24 @@ public class Buy_2Activity extends BaseActivity {
             @Override
             public void run() {
                 backNum--;
-                mHandler.sendEmptyMessage(0);
-                mHandler.postDelayed(this, 1000);
+                mBackNumHandler.sendEmptyMessage(0);
+                mBackNumHandler.postDelayed(this, 1000);
             }
         };
-        mHandler.postDelayed(mBackRunnable, 1000);
+        mBackNumHandler.postDelayed(mBackRunnable, 1000);
     }
 
     @Override
     protected void onResume() {
         super.isBuyActivity = true;
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBackNumHandler.removeMessages(0);
+        mBackNumHandler.removeCallbacks(mBackRunnable);
+        orderHandler.removeCallbacks(queryRunnable);
     }
 }
