@@ -154,8 +154,8 @@ public class PaySuccessActivity extends BaseActivity {
     @Override
     public void initdata() {
         Intent intent = this.getIntent();
-//        lotteryNum = intent.getIntExtra("lotteryNum", 1);
-//        mUpdateOutTicketStatusInfo = (UpdateOutTicketStatusInfo) intent.getSerializableExtra("outTicket");
+        lotteryNum = intent.getIntExtra("lotteryNum", 1);
+        mUpdateOutTicketStatusInfo = (UpdateOutTicketStatusInfo) intent.getSerializableExtra("outTicket");
 //
         mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
 

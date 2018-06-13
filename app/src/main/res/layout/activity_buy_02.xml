@@ -242,18 +242,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 
-    <Button
-        android:id="@+id/bt_back"
-        android:layout_width="180dp"
-        android:layout_height="71dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="300dp"
-        android:background="@drawable/bt_selector_back_main"
-        android:text="返回主界面"
-        android:textColor="@color/white"
-        android:textSize="15dp" />
-
     <ImageView
         android:layout_width="600dp"
         android:layout_height="330.6dp"
@@ -262,6 +250,18 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:src="@mipmap/buy_step1_bg2" />
+
+    <Button
+        android:id="@+id/bt_back"
+        android:layout_width="180dp"
+        android:layout_height="71dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="230dp"
+        android:background="@drawable/bt_selector_back_main"
+        android:text="返回主界面"
+        android:textColor="@color/white"
+        android:textSize="15dp" />
 
     <ImageView
         android:id="@+id/image_sold_out"
