@@ -98,7 +98,7 @@ public class PaySuccessActivity extends BaseActivity {
             if (msg.what == 1) {
                 if (outTicketNum <= lotteryNum) {
                     mTxtOutTicketNum.setText("支付成功！正在出票...（" + outTicketNum + "/" + lotteryNum + "）");
-                    queryStatus(mIDCur);
+                    outTicketNum++;
                 } else {
                     //出票完成
                     outTicketSuccess();
@@ -322,6 +322,7 @@ public class PaySuccessActivity extends BaseActivity {
         if (mBusy)
             return;
         mIDCur = nID;
+        mHandler.sendEmptyMessage(1);
         new Thread(transmitoneS).start();
     }
 
@@ -359,9 +360,11 @@ public class PaySuccessActivity extends BaseActivity {
              */
             if (OUT_TICKET.equals(bundle.getString("type"))) {
                 String[] results = bundle.getStringArray("result");
-                outTicketNum++;
                 if (results[7].equals("01")) { //出票成功
-                    mHandler.sendEmptyMessage(1);
+                    if (outTicketNum <= lotteryNum)
+                        queryStatus(mIDCur);
+                    else
+                        mHandler.sendEmptyMessage(1);
                 }
                 if (results[7].equals("00")) { //出票失败
                     ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");

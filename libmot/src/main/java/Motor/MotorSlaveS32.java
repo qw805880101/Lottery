@@ -431,7 +431,7 @@ public class MotorSlaveS32 {
     public String queryFault(int nMid, StringBuilder sHexIn, StringBuilder sHexRecv) {
         GetFID();
         try {
-            byte[] bcmds = GetCommandDataS(mFID, MotorSlaveS32.CMD_QueryStatus, nMid, 0, 0, 0);
+            byte[] bcmds = GetCommandDataS(mFID, MotorSlaveS32.CMD_QueryFault, nMid, 0, 0, 0);
             sHexIn.append(HexUtil.byte2hex(bcmds));
             //LogUtil.d("query send：" +sHexIn);
             byte[] bcmdrec = SendDataS(mFID, bcmds, 10000);

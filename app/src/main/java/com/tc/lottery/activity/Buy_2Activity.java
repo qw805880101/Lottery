@@ -395,8 +395,6 @@ public class Buy_2Activity extends BaseActivity {
 //                stopProgressDialog();
                 if (orderInfo.getRespCode().equals("00")) {
                     if ("1".equals(orderInfo.getOrderStatus())) { //交易成功关闭订单查询
-                        orderHandler.removeCallbacks(queryRunnable);
-                        mBackNumHandler.removeMessages(0);
                         Intent intent = new Intent(Buy_2Activity.this, PaySuccessActivity.class);
                         intent.putExtra("lotteryNum", lotteryNum);
                         intent.putExtra("outTicket", outTicket());
