@@ -27,6 +27,7 @@ import com.tc.lottery.bean.InitInfo;
 import com.tc.lottery.bean.OrderInfo;
 import com.tc.lottery.bean.TerminalLotteryInfo;
 import com.tc.lottery.bean.UpdateOutTicketStatusInfo;
+import com.tc.lottery.util.MotorSlaveUtils;
 import com.tc.lottery.util.Utils;
 import com.tc.lottery.view.SuccessView;
 
@@ -45,11 +46,11 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Action1;
 
-public class PaySuccessActivity extends BaseActivity {
+import static com.tc.lottery.util.MotorSlaveUtils.OUT_TICKET;
+import static com.tc.lottery.util.MotorSlaveUtils.QUERY_FAULT;
+import static com.tc.lottery.util.MotorSlaveUtils.QUERY_STATUS;
 
-    public final static String QUERY_STATUS = "queryStatus"; //查询出票机头状态
-    public final static String OUT_TICKET = "outTicket"; //出票状态
-    public final static String QUERY_FAULT = "queryFault"; //查询设备故障
+public class PaySuccessActivity extends BaseActivity {
 
     @BindView(R.id.txt_all_num)
     TextView mTxtAllNum;
@@ -70,10 +71,7 @@ public class PaySuccessActivity extends BaseActivity {
     @BindView(R.id.lin_tips)
     LinearLayout linTips;
 
-    private boolean mBusy = false; //标记位 判断设备是否被占用运行
-    protected int mIDCur = 1; //暂不明用处
-    protected int mTicketLen = 102;//暂不明用处
-    protected MotorSlaveS32 mMotorSlave = null; //调用设备出票
+    private MotorSlaveUtils motorSlaveUtils; //机头工具类
 
     private int lotteryNum = 2; //彩票数量
     private int outTicketNum = 1; //已出数量
@@ -88,7 +86,7 @@ public class PaySuccessActivity extends BaseActivity {
 
     Runnable mBackRunnable;
 
-    Handler mHandler = new Handler() {
+    Handler mOutTicketAnimHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -104,16 +102,6 @@ public class PaySuccessActivity extends BaseActivity {
                     outTicketSuccess();
                 }
             }
-            if (msg.what == 2) {
-                if (backNum > 0) {
-                    mBtBack.setText("返回主界面(" + backNum + ")");
-                } else {
-                    mHandler.removeCallbacks(mBackRunnable);
-                    mBtBack.setEnabled(true);
-                    mBtBack.setText("返回主界面");
-                }
-            }
-
         }
     };
 
@@ -125,8 +113,7 @@ public class PaySuccessActivity extends BaseActivity {
                 if (backNum > 0) {
                     mBtBack.setText("返回主界面(" + backNum + ")");
                 } else {
-                    mHandler.removeCallbacks(mBackRunnable);
-                    mBtBack.setEnabled(true);
+                    mBackHandle.removeCallbacks(mBackRunnable);
                     mBtBack.setText("返回主界面");
                     startActivity(new Intent(PaySuccessActivity.this, MainActivity.class));
                     finish();
@@ -148,7 +135,7 @@ public class PaySuccessActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        mMotorSlave = MotorSlaveS32.getInstance();
+        motorSlaveUtils = new MotorSlaveUtils(mOutTicketHandler);
     }
 
     @Override
@@ -161,7 +148,7 @@ public class PaySuccessActivity extends BaseActivity {
 
         startAnim();
 //        startTicketNum();
-        onTransOne(mIDCur);
+        onTransOne(motorSlaveUtils.mIDCur);
     }
 
     @OnClick({R.id.bt_how, R.id.bt_back})
@@ -182,8 +169,8 @@ public class PaySuccessActivity extends BaseActivity {
      * 出票完成
      */
     private void outTicketSuccess() {
-        mHandler.removeCallbacks(mTicketNumRunnable);
-        mHandler.removeCallbacks(mAnimRunnable);
+        mOutTicketAnimHandler.removeCallbacks(mTicketNumRunnable);
+        mOutTicketAnimHandler.removeCallbacks(mAnimRunnable);
         successView.setVisibility(View.VISIBLE);
         mTxtOutTicketNum.setVisibility(View.GONE);
         mLinAllLottery.setVisibility(View.VISIBLE);
@@ -224,7 +211,7 @@ public class PaySuccessActivity extends BaseActivity {
 //                    }
 //                    mTxtSurplusNum.setText("剩余 " + surplus + " 张");
                     MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
-                    queryFault(mIDCur);
+//                    queryFault(mIDCur);
                     LogUtil.d("状态更新成功");
                 } else {
                     toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
@@ -265,11 +252,11 @@ public class PaySuccessActivity extends BaseActivity {
         mAnimRunnable = new Runnable() {
             @Override
             public void run() {
-                mHandler.sendEmptyMessage(0);
-                mHandler.postDelayed(this, 2000);
+                mOutTicketAnimHandler.sendEmptyMessage(0);
+                mOutTicketAnimHandler.postDelayed(this, 2000);
             }
         };
-        mHandler.postDelayed(mAnimRunnable, 0);
+        mOutTicketAnimHandler.postDelayed(mAnimRunnable, 0);
     }
 
     /**
@@ -279,11 +266,11 @@ public class PaySuccessActivity extends BaseActivity {
         mTicketNumRunnable = new Runnable() {
             @Override
             public void run() {
-                mHandler.sendEmptyMessage(1);
-                mHandler.postDelayed(this, 1500);
+                mOutTicketAnimHandler.sendEmptyMessage(1);
+                mOutTicketAnimHandler.postDelayed(this, 1500);
             }
         };
-        mHandler.postDelayed(mTicketNumRunnable, 1500);
+        mOutTicketAnimHandler.postDelayed(mTicketNumRunnable, 1500);
     }
 
     int backNum = 90;
@@ -293,7 +280,6 @@ public class PaySuccessActivity extends BaseActivity {
      */
     private void startBackNum() {
         backNum = 90;
-        mBtBack.setEnabled(false);
         mBtBack.setText("返回主界面(" + backNum + ")");
         mBackRunnable = new Runnable() {
             @Override
@@ -309,6 +295,7 @@ public class PaySuccessActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        motorSlaveUtils.close();
         mBackHandle.removeCallbacks(mBackRunnable);
         mBackHandle.removeMessages(0);
     }
@@ -319,11 +306,11 @@ public class PaySuccessActivity extends BaseActivity {
      * @param nID
      */
     private void onTransOne(int nID) {
-        if (mBusy)
+        if (motorSlaveUtils.mBusy)
             return;
-        mIDCur = nID;
-        mHandler.sendEmptyMessage(1);
-        new Thread(transmitoneS).start();
+        motorSlaveUtils.setmIDCur(nID);
+        mOutTicketAnimHandler.sendEmptyMessage(1);
+        new Thread(motorSlaveUtils.transmitoneS).start();
     }
 
     /**
@@ -332,10 +319,10 @@ public class PaySuccessActivity extends BaseActivity {
      * @param nID
      */
     private void queryStatus(int nID) {
-        if (mBusy)
+        if (motorSlaveUtils.mBusy)
             return;
-        mIDCur = nID;
-        new Thread(ReadStatusRunnable).start();
+        motorSlaveUtils.setmIDCur(nID);
+        new Thread(motorSlaveUtils.ReadStatusRunnable).start();
     }
 
     /**
@@ -344,16 +331,17 @@ public class PaySuccessActivity extends BaseActivity {
      * @param nID
      */
     private void queryFault(int nID) {
-        if (mBusy)
+        if (motorSlaveUtils.mBusy)
             return;
-        mIDCur = nID;
-        new Thread(QueryFaultRunnable).start();
+        motorSlaveUtils.setmIDCur(nID);
+        new Thread(motorSlaveUtils.QueryFaultRunnable).start();
     }
 
     Handler mOutTicketHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            motorSlaveUtils.open();
             Bundle bundle = msg.getData();
             /**
              * 出票命令返回
@@ -362,9 +350,9 @@ public class PaySuccessActivity extends BaseActivity {
                 String[] results = bundle.getStringArray("result");
                 if (results[7].equals("01")) { //出票成功
                     if (outTicketNum <= lotteryNum)
-                        queryStatus(mIDCur);
+                        queryStatus(motorSlaveUtils.mIDCur);
                     else
-                        mHandler.sendEmptyMessage(1);
+                        mOutTicketAnimHandler.sendEmptyMessage(1);
                 }
                 if (results[7].equals("00")) { //出票失败
                     ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");
@@ -377,10 +365,10 @@ public class PaySuccessActivity extends BaseActivity {
             if (QUERY_STATUS.equals(bundle.getString("type"))) {
                 if (bundle.getBoolean("2")) {
                     /* 掉票处无票， 执行出票命令 */
-                    onTransOne(mIDCur);
+                    onTransOne(motorSlaveUtils.mIDCur);
                 } else {
                     /* 掉票处有票，执行设备状态检查命令 */
-                    queryStatus(mIDCur);
+                    queryStatus(motorSlaveUtils.mIDCur);
                 }
             }
 
@@ -405,97 +393,9 @@ public class PaySuccessActivity extends BaseActivity {
                     //电机故障
                     MyApplication.status = "04";
                 }
-
             }
         }
     };
 
-    /**
-     * 出票线程
-     */
-    Runnable transmitoneS = new Runnable() {
-        @Override
-        public void run() {
-            //runonce();
-            mBusy = true;
-            try {
-                StringBuilder s1 = new StringBuilder();
-                StringBuilder s2 = new StringBuilder();
-                mMotorSlave.TransOneSimpleS(mIDCur, mTicketLen, s1, s2, 1);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
-
-                Bundle bundle = new Bundle();
-                bundle.putStringArray("result", s2.toString().split(" "));
-                sendMsg(bundle, OUT_TICKET);
-            } catch (Exception exp) {
-
-            }
-            mBusy = false;
-        }
-    };
-
-    /**
-     * 查询机头状态
-     */
-    Runnable ReadStatusRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mBusy = true;
-            try {
-                StringBuilder s1 = new StringBuilder();
-                StringBuilder s2 = new StringBuilder();
-                HashMap<Integer, Boolean> status = mMotorSlave.ReadStatus(mIDCur, s1, s2);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
-
-                Bundle bundle = new Bundle();
-                for (Entry<Integer, Boolean> e : status.entrySet()) {
-                    bundle.putBoolean("" + e.getKey(), e.getValue());
-                }
-                sendMsg(bundle, QUERY_STATUS);
-            } catch (Exception exp) {
-
-            }
-            mBusy = false;
-        }
-    };
-
-    /**
-     * 查询设备故障
-     */
-    Runnable QueryFaultRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mBusy = true;
-            try {
-                StringBuilder s1 = new StringBuilder();
-                StringBuilder s2 = new StringBuilder();
-                String status = mMotorSlave.queryFault(mIDCur, s1, s2);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
-
-                Bundle bundle = new Bundle();
-                bundle.putString("result", status);
-                sendMsg(bundle, QUERY_FAULT);
-            } catch (Exception exp) {
-
-            }
-            mBusy = false;
-        }
-    };
-
-    /**
-     * 回调参数
-     *
-     * @param bundle
-     * @param type
-     */
-    private void sendMsg(Bundle bundle, String type) {
-        Message message = new Message();
-        bundle.putString("type", type);
-        message.setData(bundle);
-        mOutTicketHandler.sendMessage(message);
-    }
 
 }

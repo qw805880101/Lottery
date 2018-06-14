@@ -22,9 +22,9 @@ import java.util.Map;
 
 import Motor.MotorSlaveS32;
 
-import static com.tc.lottery.activity.PaySuccessActivity.OUT_TICKET;
-import static com.tc.lottery.activity.PaySuccessActivity.QUERY_FAULT;
-import static com.tc.lottery.activity.PaySuccessActivity.QUERY_STATUS;
+import static com.tc.lottery.util.MotorSlaveUtils.OUT_TICKET;
+import static com.tc.lottery.util.MotorSlaveUtils.QUERY_FAULT;
+import static com.tc.lottery.util.MotorSlaveUtils.QUERY_STATUS;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -340,7 +340,7 @@ public class Buy_2Activity extends BaseActivity {
 
         lotteryTotalAmt = lotteryNum * Double.parseDouble(mTerminalLotteryInfo.getLotteryAmt()) / 100;
         mTxtLotteryNum.setText("" + lotteryNum);
-        mTxtTotalAmt.setText("" + lotteryTotalAmt);
+        mTxtTotalAmt.setText("¥ " + lotteryTotalAmt);
     }
 
     /**
@@ -366,10 +366,10 @@ public class Buy_2Activity extends BaseActivity {
             @Override
             public void call(OrderInfo orderInfo) {
                 stopProgressDialog();
+                orderHandler.removeCallbacks(queryRunnable);
                 if (orderInfo.getRespCode().equals("00")) {
                     if (!"".equals(orderInfo.getQrCode())) { //下单成功
                         bitCode = QRCodeUtil.createQRCodeBitmap(orderInfo.getQrCode(), 300, 300);
-                        startQueryOrder();
                         closeBt(payType);
                         startOpenAnim(bitCode, payType);
                     }
@@ -405,13 +405,15 @@ public class Buy_2Activity extends BaseActivity {
                     if ("0".equals(orderInfo.getOrderStatus()) && isCloseOrder && queryNum >= (closeQueryNum + 2)) {
                         isCloseOrder = false;
                         orderHandler.removeCallbacks(queryRunnable);
+                        mBackNumHandler.removeCallbacks(mBackRunnable);
                         mBackNumHandler.removeMessages(0);
 //                        startCloseAnim();
                     }
 
                     if ("0".equals(orderInfo.getOrderStatus()) && queryNum >= 31) {
                         orderHandler.removeCallbacks(queryRunnable);
-                        mBackNumHandler.removeMessages(0);
+//                        mBackNumHandler.removeCallbacks(mBackRunnable);
+//                        mBackNumHandler.removeMessages(0);
 //                        startCloseAnim();
                     }
 
@@ -538,8 +540,8 @@ public class Buy_2Activity extends BaseActivity {
             if (msg.what == 0) {
                 if (backNum > 0) {
                     mTxtBack.setText("关闭(" + backNum + ")");
-                    if (backNum == 75)
-                        mTxtBack.setEnabled(true);
+//                    if (backNum == 75)
+//                        mTxtBack.setEnabled(true);
                 } else {
                     mBackNumHandler.removeCallbacks(mBackRunnable);
 //                    handler.removeCallbacks(queryRunnable);
@@ -568,9 +570,10 @@ public class Buy_2Activity extends BaseActivity {
      * 开始返回倒计时
      */
     private void startBackNum() {
+        startQueryOrder();
         backNum = 90;
         queryNum = 0;
-        mTxtBack.setEnabled(false);
+//        mTxtBack.setEnabled(false);
         mTxtBack.setText("关闭(90)");
         mBackRunnable = new Runnable() {
             @Override
