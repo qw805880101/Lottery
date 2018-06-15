@@ -53,32 +53,6 @@ public class MainActivity extends BaseActivity {
 
     private InitInfo initInfo; //初始化参数
 
-    private MotorSlaveUtils motorSlaveUtils; //机头工具类
-
-    private Handler mMotorHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            motorSlaveUtils.open();
-            Bundle bundle = msg.getData();
-            /**
-             * 查询状态命令返回
-             */
-            if (QUERY_STATUS.equals(bundle.getString("type"))) {
-                terminalUpdate("00");
-//                if (bundle.getBoolean("0") && bundle.getBoolean("1") && bundle.getBoolean("2")) {
-//                    /* 掉票处无票， 执行出票命令 */
-//                    terminalUpdate("00");
-//                } else {
-//                    stopProgressDialog();
-//                    /* 掉票处有票，执行设备状态检查命令 */
-//                    ToastUtils.showToast(MainActivity.this, "掉票处有票, 请先取下已出票");
-//                }
-            }
-
-        }
-    };
-
     @Override
     public View getTitleView() {
         return null;
@@ -104,8 +78,6 @@ public class MainActivity extends BaseActivity {
         mBanner.setDelayTime(3000);
         //banner设置方法全部调用完毕时最后调用
         mBanner.start();
-
-        motorSlaveUtils = new MotorSlaveUtils(mMotorHandler);
     }
 
     @Override
@@ -122,25 +94,13 @@ public class MainActivity extends BaseActivity {
         }
         switch (view.getId()) {
             case R.id.bt_buy:
-                queryStatus(motorSlaveUtils.mIDCur);
+                Intent intent = new Intent(MainActivity.this, Buy_2Activity.class);
+                startActivity(intent);
                 break;
             case R.id.bt_prompt:
                 startActivity(new Intent(this, HowActivity.class));
                 break;
         }
-    }
-
-    /**
-     * 查询状态
-     *
-     * @param nID
-     */
-    private void queryStatus(int nID) {
-        if (motorSlaveUtils.mBusy)
-            return;
-        startProgressDialog(this);
-        motorSlaveUtils.setmIDCur(nID);
-        new Thread(motorSlaveUtils.ReadStatusRunnable).start();
     }
 
     /**
@@ -182,58 +142,5 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }, this));
-    }
-
-    /**
-     * 终端状态同步
-     */
-    private void terminalUpdate(String status) {
-//        startProgressDialog(this);
-        Map sendMap = Utils.getRequestData("terminalUpdate.Req");
-        /**
-         * 01 公众号
-         02 终端
-         */
-        sendMap.put("reqType", "02");
-        /**
-         * 00 正常
-         01 设备故障
-         02 票箱故障
-         03 票箱无票
-         */
-        sendMap.put("status", status);
-        /**
-         * 如终端状态为02，03上送
-         1,2,3,4 用，号分割
-         */
-        sendMap.put("boxStatus", "1");
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
-        Observable<BaseBean> register = mApi.terminalUpdate(requestBody).compose(RxUtil.<BaseBean>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBean>() {
-            @Override
-            public void call(BaseBean baseBean) {
-                stopProgressDialog();
-                if ("00".equals(baseBean.getRespCode())) {
-                    ToastUtils.showToast(MainActivity.this, "终端状态同步成功");
-                    Intent intent = new Intent(MainActivity.this, Buy_2Activity.class);
-                    startActivity(intent);
-                } else {
-                    toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());
-                }
-            }
-        }, this));
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        motorSlaveUtils.open();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        motorSlaveUtils.close();
     }
 }

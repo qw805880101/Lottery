@@ -12,8 +12,6 @@ import java.util.Map;
 
 import Motor.MotorSlaveS32;
 
-import static com.tencent.smtt.sdk.TbsReaderView.TAG;
-
 public class MotorSlaveUtils {
 
     public final static String QUERY_STATUS = "queryStatus"; //查询出票机头状态
@@ -45,8 +43,8 @@ public class MotorSlaveUtils {
                 StringBuilder s1 = new StringBuilder();
                 StringBuilder s2 = new StringBuilder();
                 mMotorSlave.TransOneSimpleS(mIDCur, mTicketLen, s1, s2, 1);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
+                LogUtil.d("发送 ----" + s1.toString());
+                LogUtil.d("接收 " + s2.toString());
 
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("result", s2.toString().split(" "));
@@ -68,8 +66,8 @@ public class MotorSlaveUtils {
                 StringBuilder s1 = new StringBuilder();
                 StringBuilder s2 = new StringBuilder();
                 HashMap<Integer, Boolean> status = mMotorSlave.ReadStatus(mIDCur, s1, s2);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
+                LogUtil.d("发送 ----" + s1.toString());
+                LogUtil.d("接收 " + s2.toString());
 
                 Bundle bundle = new Bundle();
                 for (Map.Entry<Integer, Boolean> e : status.entrySet()) {
@@ -94,8 +92,8 @@ public class MotorSlaveUtils {
                 StringBuilder s1 = new StringBuilder();
                 StringBuilder s2 = new StringBuilder();
                 String status = mMotorSlave.queryFault(mIDCur, s1, s2);
-                Log.d(TAG, "发送 ----" + s1.toString());
-                Log.d(TAG, "接收 " + s2.toString());
+                LogUtil.d("发送 ----" + s1.toString());
+                LogUtil.d("接收 " + s2.toString());
 
                 Bundle bundle = new Bundle();
                 bundle.putString("result", status);

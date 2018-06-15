@@ -148,7 +148,7 @@ public class PaySuccessActivity extends BaseActivity {
 
         startAnim();
 //        startTicketNum();
-        onTransOne(motorSlaveUtils.mIDCur);
+        queryStatus(motorSlaveUtils.mIDCur);
     }
 
     @OnClick({R.id.bt_how, R.id.bt_back})

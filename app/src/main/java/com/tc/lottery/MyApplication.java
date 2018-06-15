@@ -4,10 +4,7 @@ import android.os.Build;
 import android.os.StrictMode;
 
 import com.psylife.wrmvplibrary.BaseApplication;
-import com.psylife.wrmvplibrary.WRCoreApp;
-import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.tc.lottery.bean.TerminalLotteryInfo;
-import com.tencent.smtt.sdk.QbSdk;
 
 import java.util.List;
 

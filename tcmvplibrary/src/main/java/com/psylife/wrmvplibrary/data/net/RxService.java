@@ -126,7 +126,7 @@ public class RxService {
 
     public static HttpLoggingInterceptor getLoggingInterceptor() {
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        if (true) {
+        if (false) {
             httpLoggingInterceptor.setLevel(Level.BODY);
         } else {
             httpLoggingInterceptor.setLevel(Level.NONE);

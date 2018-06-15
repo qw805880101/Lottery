@@ -9,7 +9,7 @@ import com.psylife.wrmvplibrary.BuildConfig;
  */
 
 public class LogUtil {
-    private static boolean isDebug = true;
+    private static boolean isDebug = false;
 
     static String mTag = "LogUtils";
 
