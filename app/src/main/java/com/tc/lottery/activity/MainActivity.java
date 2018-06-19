@@ -68,8 +68,7 @@ public class MainActivity extends BaseActivity {
 
         //设置图片加载器
         mBanner.setImageLoader(new GlideImageLoader());
-        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528997715241&di=1aeff42cbff572e831d77d108e6a1cc5&imgtype=0&src=http%3A%2F%2Fimages.bookuu.com%2Fbook%2FC%2F00605%2F97878074715091294093-fm.jpg");
-        bannerImage.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528997747237&di=8887b7836fe2f076fd0ea8a170856900&imgtype=0&src=http%3A%2F%2Fpic29.nipic.com%2F20130513%2F10700765_191431172382_2.jpg");
+        bannerImage.add("https://www.baidu.com/img/bd_logo1.png?qua=high&where=super");
 //        //设置图片集合
         mBanner.setImages(bannerImage);
         //设置指示器位置（当banner模式中有指示器时）
@@ -124,6 +123,7 @@ public class MainActivity extends BaseActivity {
                     if (!"".equals(initInfo.getImg3()))
                         bannerImage.add(initInfo.getImg3());
                     //设置图片集合
+//                    mBanner.setImages(bannerImage);
                     MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
                     MyApplication.terminalLotteryStatus = initInfo.getTerminalStatus();
                     if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
