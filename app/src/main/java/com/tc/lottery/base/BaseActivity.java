@@ -3,6 +3,10 @@ package com.tc.lottery.base;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
+import android.widget.Toast;
 
 import com.psylife.wrmvplibrary.RxManager;
 import com.psylife.wrmvplibrary.base.WRBaseActivity;
@@ -34,6 +38,7 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         init();
     }
 

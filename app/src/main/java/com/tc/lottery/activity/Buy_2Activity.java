@@ -200,7 +200,7 @@ public class Buy_2Activity extends BaseActivity {
 
         motorSlaveUtils = new MotorSlaveUtils(mMotorHandler);
 
-        closeBt("999");
+//        closeBt("999");
     }
 
     @Override

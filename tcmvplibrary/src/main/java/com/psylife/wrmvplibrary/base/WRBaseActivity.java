@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -52,12 +54,34 @@ public abstract class WRBaseActivity<T extends WRBasePresenter, E extends WRBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置状态栏透明
+        Window window = getWindow();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        int flag = LayoutParams.FLAG_FULLSCREEN;
+        window.setFlags(flag, flag);
+        hideBottomUIMenu();
+
+        hideNavigation();
 
         if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT_WATCH) {
             setStatusBarColor();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         init(savedInstanceState);
+    }
+
+    //隐藏虚拟按键：
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 
     private void init(Bundle savedInstanceState) {
@@ -243,4 +267,41 @@ public abstract class WRBaseActivity<T extends WRBasePresenter, E extends WRBase
             progressDialog = null;
         }
     }
+    public boolean hideNavigation(){
+        boolean ishide;
+        try
+        {
+            String command;
+            command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib service call activity 42 s16 com.android.systemui";
+            Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
+            proc.waitFor();
+            ishide = true;
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            ishide = false;
+        }
+        return ishide;
+    }
+    /*显示虚拟按键*/
+    public boolean showNavigation(){
+        boolean isshow;
+        try
+        {
+            String command;
+            command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
+            Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
+            proc.waitFor();
+            isshow = true;
+        }
+        catch (Exception e)
+        {
+            isshow = false;
+            e.printStackTrace();
+        }
+        return isshow;
+    }
+
+
 }

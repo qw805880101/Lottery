@@ -203,7 +203,7 @@
             android:layout_height="167.3dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="55dp"
-            android:src="@mipmap/buy_step1_caipiao" />
+            android:src="@mipmap/buy_step1_caipiao2" />
 
         <TextView
             android:id="@+id/txt_lottery_surplus"
