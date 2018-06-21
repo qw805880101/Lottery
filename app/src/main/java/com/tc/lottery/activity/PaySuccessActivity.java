@@ -203,7 +203,11 @@ public class PaySuccessActivity extends BaseActivity {
 //                        mImageSoldOut.setVisibility(View.VISIBLE);
 //                    }
 //                    mTxtSurplusNum.setText("剩余 " + surplus + " 张");
-                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
+                    for (int i = 0; i < initInfo.getTerminalLotteryDtos().size(); i++) {
+                        if (initInfo.getTerminalLotteryDtos().get(i).getBoxId().equals("1")) {
+                            MyApplication.mTerminalLotteryInfo = initInfo.getTerminalLotteryDtos().get(i);
+                        }
+                    }
 //                    queryFault(mIDCur);
                     LogUtil.d("状态更新成功");
                 } else {

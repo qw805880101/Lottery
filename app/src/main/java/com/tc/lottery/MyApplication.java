@@ -40,7 +40,9 @@ public class MyApplication extends BaseApplication {
      */
     public static String status; //设备状态
 
-    public static List<TerminalLotteryInfo> mTerminalLotteryInfos; //初始化返回的票种列表
+//    public static List<TerminalLotteryInfo> mTerminalLotteryInfos; //初始化返回的票种列表
+
+    public static TerminalLotteryInfo mTerminalLotteryInfo;
 
     /**
      * 设备状态

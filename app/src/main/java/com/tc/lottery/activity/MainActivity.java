@@ -124,7 +124,14 @@ public class MainActivity extends BaseActivity {
                         bannerImage.add(initInfo.getImg3());
                     //设置图片集合
 //                    mBanner.setImages(bannerImage);
-                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
+//                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
+
+                    for (int i = 0; i < initInfo.getTerminalLotteryDtos().size(); i++) {
+                        if (initInfo.getTerminalLotteryDtos().get(i).getBoxId().equals("1")) {
+                            MyApplication.mTerminalLotteryInfo = initInfo.getTerminalLotteryDtos().get(i);
+                        }
+                    }
+
                     MyApplication.terminalLotteryStatus = initInfo.getTerminalStatus();
                     if (!initInfo.getUpdateStatus().equals("00")) { //需要更新
                         UpdateAppUtils.from(MainActivity.this)

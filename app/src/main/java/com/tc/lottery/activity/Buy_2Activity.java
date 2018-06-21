@@ -211,7 +211,7 @@ public class Buy_2Activity extends BaseActivity {
 //        mTxtTerminalStatus.setText("设备状态：" + getTerminalStatus(terminalLotteryStatus));
 //        mTxtLotteryAmt.setText("单价" + mTerminalLotteryInfos.get(0).getLotteryAmt());
 
-        mTerminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
+        mTerminalLotteryInfo = MyApplication.mTerminalLotteryInfo;
 
         surplus = Integer.parseInt(mTerminalLotteryInfo.getSurplus());
 
@@ -446,14 +446,14 @@ public class Buy_2Activity extends BaseActivity {
         }
 
         startProgressDialog(this);
-        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
+        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfo;
         terminalLotteryInfo.setNum("" + lotteryNum);
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
         orderMap = Utils.getRequestData("prepOrder.Req");
         orderMap.put("merOrderId", DateUtil.format(new Date(), "yyyyMMddHHmmss") + payType + (lotteryTotalAmt * 100)); //订单规则：日期+交易类型+交易金额
         orderMap.put("merOrderTime", DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-        orderMap.put("orderAmt", "" + (lotteryTotalAmt * 100));
+        orderMap.put("orderAmt", "" + (int) (lotteryTotalAmt * 100));
         orderMap.put("terminalLotteryDtos", lotteryInfos);
         orderMap.put("payType", payType);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(orderMap));
@@ -527,7 +527,7 @@ public class Buy_2Activity extends BaseActivity {
      */
     private UpdateOutTicketStatusInfo outTicket() {
         UpdateOutTicketStatusInfo updateOutTicketStatusInfo = new UpdateOutTicketStatusInfo();
-        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfos.get(0);
+        TerminalLotteryInfo terminalLotteryInfo = MyApplication.mTerminalLotteryInfo;
         terminalLotteryInfo.setNum("" + lotteryNum);
         List<TerminalLotteryInfo> lotteryInfos = new ArrayList<>();
         lotteryInfos.add(terminalLotteryInfo);
