@@ -24,8 +24,8 @@ public class MyApplication extends BaseApplication {
     public static int GOODS_NUM = 0;
 
     //    public static String URL = "https://www.new-orator.com/gateway/";
-    public static String URL = "https://dev.new-orator.com/gateway/";
-//    public static String URL = "http://172.21.10.69:8998/cp-pay/";
+    public static String URL = "https://dev.new-orator.com/gateway/front/";
+//    public static String URL = "http://172.21.10.69:8998/cp-pay/mpi/";
 
     public static String USER_ID = "26";
 

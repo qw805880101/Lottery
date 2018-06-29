@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
@@ -46,6 +47,8 @@ public class MainActivity extends BaseActivity {
     ImageButton mBtBuy;
     @BindView(R.id.bt_prompt)
     ImageButton mBtPrompt;
+    @BindView(R.id.banner_image)
+    ImageView mImageView;
 
     private List<String> bannerImage = new ArrayList<>();
 
@@ -116,19 +119,25 @@ public class MainActivity extends BaseActivity {
                 initInfo = baseBean;
                 if ("00".equals(initInfo.getRespCode())) {
 //                        ToastUtils.showToast(MainActivity.this, "初始化成功");
-                    if (!"".equals(initInfo.getImg1()))
-                        bannerImage.add(initInfo.getImg1());
-                    if (!"".equals(initInfo.getImg2()))
-                        bannerImage.add(initInfo.getImg2());
-                    if (!"".equals(initInfo.getImg3()))
-                        bannerImage.add(initInfo.getImg3());
-                    //设置图片集合
-//                    mBanner.setImages(bannerImage);
+                    if (initInfo.getImgs() != null) {
+                        if (initInfo.getImgs().size() > 0) {
+                            for (int i = 0; i < initInfo.getImgs().size(); i++) {
+                                bannerImage.add(initInfo.getImgs().get(i));
+                            }
+                            //设置图片集合
+                            mBanner.setImages(bannerImage);
+                            mBanner.setVisibility(View.VISIBLE);
+                            mImageView.setVisibility(View.GONE);
+                            mBanner.start();
+                        }
+                    }
 //                    MyApplication.mTerminalLotteryInfos = initInfo.getTerminalLotteryDtos();
 
-                    for (int i = 0; i < initInfo.getTerminalLotteryDtos().size(); i++) {
-                        if (initInfo.getTerminalLotteryDtos().get(i).getBoxId().equals("1")) {
-                            MyApplication.mTerminalLotteryInfo = initInfo.getTerminalLotteryDtos().get(i);
+                    if (initInfo.getTerminalLotteryDtos() != null) {
+                        for (int i = 0; i < initInfo.getTerminalLotteryDtos().size(); i++) {
+                            if (initInfo.getTerminalLotteryDtos().get(i).getBoxId().equals("1")) {
+                                MyApplication.mTerminalLotteryInfo = initInfo.getTerminalLotteryDtos().get(i);
+                            }
                         }
                     }
 
@@ -143,6 +152,11 @@ public class MainActivity extends BaseActivity {
                                 .isForce(initInfo.getUpdateStatus().equals("01") ? true : false) //是否强制更新，默认false 强制更新情况下用户不同意更新则不能使用app
                                 .update();
                     }
+
+                    if (initInfo.getUpdateStatus().equals("01")) {
+                        return;
+                    }
+
                     initStatus = true;
                 } else {
                     toastMessage(initInfo.getRespCode(), initInfo.getRespDesc());

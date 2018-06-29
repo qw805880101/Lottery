@@ -217,7 +217,7 @@ public class Buy_2Activity extends BaseActivity {
 
         mTxtSurplusNum.setText("剩余 " + surplus + " 张");
 
-        if (mTerminalLotteryInfo.getSurplus().equals("0") && "4".equals(MyApplication.terminalLotteryStatus)) {
+        if (mTerminalLotteryInfo.getSurplus().equals("0")/* && "4".equals(MyApplication.terminalLotteryStatus)*/) {
             mImageSoldOut.setVisibility(View.VISIBLE);
         }
 

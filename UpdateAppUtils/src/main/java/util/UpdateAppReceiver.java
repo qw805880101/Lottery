@@ -12,13 +12,14 @@ import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
+import customview.DownLoadProgressbar;
 
 
 /**
  * Created by Teprinciple on 2017/11/3.
  */
 
- public class UpdateAppReceiver extends BroadcastReceiver {
+public class UpdateAppReceiver extends BroadcastReceiver {
 
 
     @Override
@@ -29,25 +30,27 @@ import java.io.File;
         String title = intent.getStringExtra("title");
 
         NotificationManager nm = null;
-        if (UpdateAppUtils.showNotification){
+        if (UpdateAppUtils.showNotification) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setContentTitle("正在下载 "+title);
+            builder.setContentTitle("正在下载 " + title);
             builder.setSmallIcon(android.R.mipmap.sym_def_app_icon);
-            builder.setProgress(100,progress,false);
+            builder.setProgress(100, progress, false);
 
             Notification notification = builder.build();
             nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(notifyId,notification);
+            nm.notify(notifyId, notification);
         }
 
+        DownLoadProgressbar downLoadProgressbar = DownLoadProgressbar.getDownLoadProgressbar(UpdateAppUtils.getActivity());
+        downLoadProgressbar.setProgress(progress);
 
-        if (progress == 100){
-            if (nm!=null)nm.cancel(notifyId);
+        if (progress == 100) {
+            if (nm != null) nm.cancel(notifyId);
 
             if (DownloadAppUtils.downloadUpdateApkFilePath != null) {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 File apkFile = new File(DownloadAppUtils.downloadUpdateApkFilePath);
-                if ( UpdateAppUtils.needFitAndroidN &&  Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (UpdateAppUtils.needFitAndroidN && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     Uri contentUri = FileProvider.getUriForFile(
                             context, context.getPackageName() + ".fileprovider", apkFile);

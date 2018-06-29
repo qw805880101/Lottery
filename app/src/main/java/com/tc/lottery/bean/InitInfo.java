@@ -30,6 +30,8 @@ public class InitInfo {
      */
     private String img3;
 
+    private List<String> imgs;
+
     private List<TerminalLotteryInfo> terminalLotteryDtos;
     /**
      * 更新状态
@@ -53,6 +55,14 @@ public class InitInfo {
 
     private String respCode;
     private String respDesc;
+
+    public List<String> getImgs() {
+        return imgs;
+    }
+
+    public void setImgs(List<String> imgs) {
+        this.imgs = imgs;
+    }
 
     public String getRespCode() {
         return respCode;

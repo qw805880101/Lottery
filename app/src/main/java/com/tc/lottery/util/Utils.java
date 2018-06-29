@@ -76,7 +76,7 @@ public class Utils {
         requestData.put("sendTime", DateUtil.format(new Date(), "yyyymmddhhmmss")); //发送时间
         requestData.put("terminalCode", "0002"); //终端类型
 //        requestData.put("terminalId", GetUUID.getUUID()); //终端编号
-        requestData.put("terminalId", "89293012931029831011"); //终端编号
+        requestData.put("terminalId", "037100000100002"); //终端编号
         return requestData;
     }
 

@@ -24,7 +24,7 @@ public class UpdateAppUtils {
     public static final int DOWNLOAD_BY_APP = 1003;
     public static final int DOWNLOAD_BY_BROWSER = 1004;
 
-    private Activity activity;
+    private static Activity activity;
     private int checkBy = CHECK_BY_VERSION_CODE;
     private int downloadBy = DOWNLOAD_BY_APP;
     private int serverVersionCode = 0;
@@ -52,6 +52,10 @@ public class UpdateAppUtils {
 
     public static UpdateAppUtils from(Activity activity){
         return new UpdateAppUtils(activity);
+    }
+
+    public static Activity getActivity(){
+        return activity;
     }
 
     public UpdateAppUtils checkBy(int checkBy){
@@ -142,7 +146,7 @@ public class UpdateAppUtils {
             public void callback(int position) {
                 switch (position){
                     case 0:  //cancle
-                        if (isForce)System.exit(0);
+//                        if (isForce)System.exit(0);
                         break;
 
                     case 1:  //sure
