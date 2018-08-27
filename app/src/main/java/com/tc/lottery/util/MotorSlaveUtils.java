@@ -20,7 +20,7 @@ public class MotorSlaveUtils {
 
     public boolean mBusy = false; //标记位 判断设备是否被占用运行
     public int mIDCur = 1; //暂不明用处
-    public int mTicketLen = 102;//暂不明用处
+    public int mTicketLen = 102;//票尺寸
     public MotorSlaveS32 mMotorSlave = null; //调用设备出票
     private Handler mHandler;
 
@@ -30,6 +30,10 @@ public class MotorSlaveUtils {
         this.mHandler = mHandler;
     }
 
+    public void setTicketLen(int ticketLen) {
+        if (ticketLen != 0)
+            this.mTicketLen = ticketLen;
+    }
 
     /**
      * 出票线程
@@ -65,6 +69,7 @@ public class MotorSlaveUtils {
             try {
                 StringBuilder s1 = new StringBuilder();
                 StringBuilder s2 = new StringBuilder();
+                LogUtil.d("mTicketLen ----" + mTicketLen);
                 HashMap<Integer, Boolean> status = mMotorSlave.ReadStatus(mIDCur, s1, s2);
                 LogUtil.d("发送 ----" + s1.toString());
                 LogUtil.d("接收 " + s2.toString());

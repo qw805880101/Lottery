@@ -1,62 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Banner="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color_20324d"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/main_sw"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/bg_color_20324d"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <com.youth.banner.Banner
-            android:id="@+id/banner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="gone"
-            />
-
-        <ImageView
-            android:id="@+id/banner_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:layout_weight="1"
-            android:src="@mipmap/ad"
-            />
-
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/bg_color_20324d"
+            android:orientation="vertical"
+            android:padding="15dp">
 
-            <ImageButton
-                android:id="@+id/bt_buy"
-                android:layout_width="273.3dp"
+            <com.youth.banner.Banner
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bt_selector_main_buy"
-                android:gravity="center" />
+                android:visibility="gone"
+                Banner:image_scale_type="fit_xy" />
 
-            <ImageButton
-                android:id="@+id/bt_prompt"
-                android:layout_width="273.3dp"
+            <ImageView
+                android:id="@+id/banner_image"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/bt_selector_main_how" />
+                android:scaleType="fitXY"
+                android:src="@mipmap/ad" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/bt_buy"
+                    android:layout_width="273.3dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_selector_main_buy"
+                    android:gravity="center" />
+
+                <ImageButton
+                    android:id="@+id/bt_prompt"
+                    android:layout_width="273.3dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bt_selector_main_how" />
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-    <include layout="@layout/view_bottom" />
-
+        <include layout="@layout/view_bottom" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

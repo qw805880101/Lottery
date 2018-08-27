@@ -92,7 +92,7 @@ public class PaySuccessActivity extends BaseActivity {
                     outTicketNum++;
                 } else {
                     //出票完成
-                    outTicketSuccess();
+                    outTicketSuccess("1");
                 }
             }
         }
@@ -141,6 +141,8 @@ public class PaySuccessActivity extends BaseActivity {
 
         startAnim();
 //        startTicketNum();
+        motorSlaveUtils.setTicketLen(Integer.parseInt(MyApplication.mTerminalLotteryInfo.getTicketLen() != null &&
+                !MyApplication.mTerminalLotteryInfo.getTicketLen().equals("") ? MyApplication.mTerminalLotteryInfo.getTicketLen() : "0"));
         queryStatus(motorSlaveUtils.mIDCur);
     }
 
@@ -161,17 +163,23 @@ public class PaySuccessActivity extends BaseActivity {
     /**
      * 出票完成
      */
-    private void outTicketSuccess() {
+    private void outTicketSuccess(String ticketStatus) {
+        if ("2".equals(ticketStatus)) {
+            mTxtOutTicketNum.setText("出票失败，请联系工作人员");
+            mLinAllLottery.setVisibility(View.GONE);
+            mBtHow.setVisibility(View.GONE);
+        } else {
+            mTxtOutTicketNum.setVisibility(View.GONE);
+            mLinAllLottery.setVisibility(View.VISIBLE);
+            successView.setVisibility(View.VISIBLE);
+            mTxtAllNum.setText("" + lotteryNum);
+        }
         mOutTicketAnimHandler.removeCallbacks(mTicketNumRunnable);
         mOutTicketAnimHandler.removeCallbacks(mAnimRunnable);
-        successView.setVisibility(View.VISIBLE);
-        mTxtOutTicketNum.setVisibility(View.GONE);
-        mLinAllLottery.setVisibility(View.VISIBLE);
-        mLinBt.setVisibility(View.VISIBLE);
         linTips.setVisibility(View.GONE);
         startBackNum();
-        mTxtAllNum.setText("" + lotteryNum);
-        outTicket("1");
+        mLinBt.setVisibility(View.VISIBLE);
+        outTicket(ticketStatus);
     }
 
     /**
@@ -353,6 +361,7 @@ public class PaySuccessActivity extends BaseActivity {
                 }
                 if (results[7].equals("00")) { //出票失败
                     ToastUtils.showToast(PaySuccessActivity.this, "出票失败，请联系工作人员");
+                    outTicketSuccess("2");
                 }
             }
 

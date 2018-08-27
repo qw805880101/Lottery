@@ -5,6 +5,7 @@ import android.os.StrictMode;
 
 import com.psylife.wrmvplibrary.BaseApplication;
 import com.tc.lottery.bean.TerminalLotteryInfo;
+import com.tc.lottery.util.GetUUID;
 
 import java.util.List;
 
@@ -14,22 +15,13 @@ import java.util.List;
 
 public class MyApplication extends BaseApplication {
 
-    public static final String USER_INFO = "userInfo";
-    public static final String SEARCH_HISTORY = "searchHistory";
-
-    public static String SESSION_ID = "";
-
-    public static String MER_ID = "";
-
-    public static int GOODS_NUM = 0;
-
     //    public static String URL = "https://www.new-orator.com/gateway/";
-    public static String URL = "https://dev.new-orator.com/gateway/front/";
+//    public static String URL = "https://dev.new-orator.com/gateway/front/";
 //    public static String URL = "http://172.21.10.69:8998/cp-pay/mpi/";
+    public static String URL = "https://www.new-orator.com/gateway/front/";
 
-    public static String USER_ID = "26";
-
-    public static String LEVEL = "0";
+//    public static String UUID = GetUUID.getUUID();
+    public static String UUID = "882c1ea7681700000000";
 
     /**
      * 00 设备正常

@@ -5,11 +5,15 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
@@ -49,6 +53,8 @@ public class MainActivity extends BaseActivity {
     ImageButton mBtPrompt;
     @BindView(R.id.banner_image)
     ImageView mImageView;
+    @BindView(R.id.main_sw)
+    SwipeRefreshLayout mRefresh;
 
     private List<String> bannerImage = new ArrayList<>();
 
@@ -80,6 +86,14 @@ public class MainActivity extends BaseActivity {
         mBanner.setDelayTime(3000);
         //banner设置方法全部调用完毕时最后调用
         mBanner.start();
+
+        mRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRefresh.setRefreshing(false);
+                initStart();
+            }
+        });
     }
 
     @Override
@@ -87,21 +101,45 @@ public class MainActivity extends BaseActivity {
         initStart();
     }
 
-    @OnClick({R.id.bt_buy, R.id.bt_prompt})
+    final static int COUNTS = 5;//点击次数
+    final static long DURATION = 3 * 1000;//规定有效时间
+    long[] mHits = new long[COUNTS];
+
+    @OnClick({R.id.bt_buy, R.id.bt_prompt, R.id.image_set})
     public void onViewClicked(View view) {
-        if (!initStatus) {
-            ToastUtils.showToast(this, "未初始化成功, 请重试");
-            initStart();
-            return;
-        }
-        switch (view.getId()) {
-            case R.id.bt_buy:
-                Intent intent = new Intent(MainActivity.this, Buy_2Activity.class);
+        if (view.getId() == R.id.image_set) {
+            /**
+             * 实现双击方法
+             * src 拷贝的源数组
+             * srcPos 从源数组的那个位置开始拷贝.
+             * dst 目标数组
+             * dstPos 从目标数组的那个位子开始写数据
+             * length 拷贝的元素的个数
+             */
+            System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+            //实现左移，然后最后一个位置更新距离开机的时间，如果最后一个时间和最开始时间小于DURATION，即连续5次点击
+            mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+            if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+//                String tips = "您已在[" + DURATION + "]ms内连续点击【" + mHits.length + "】次了！！！";
+//                ToastUtils.showToast(MainActivity.this, tips);
+                Intent intent = new Intent(this, SetActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.bt_prompt:
-                startActivity(new Intent(this, HowActivity.class));
-                break;
+            }
+        } else {
+            if (!initStatus) {
+                ToastUtils.showToast(this, "未初始化成功, 请重试");
+                initStart();
+                return;
+            }
+            switch (view.getId()) {
+                case R.id.bt_buy:
+                    Intent intent = new Intent(MainActivity.this, Buy_2Activity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.bt_prompt:
+                    startActivity(new Intent(this, HowActivity.class));
+                    break;
+            }
         }
     }
 
@@ -109,6 +147,7 @@ public class MainActivity extends BaseActivity {
      * 初始化接口
      */
     private void initStart() {
+        startProgressDialog(this);
         Map sendMap = Utils.getRequestData("terminalInit.Req");
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), Utils.getSendMsg(sendMap));
         Observable<InitInfo> register = mApi.init(requestBody).compose(RxUtil.<InitInfo>rxSchedulerHelper());
@@ -121,6 +160,7 @@ public class MainActivity extends BaseActivity {
 //                        ToastUtils.showToast(MainActivity.this, "初始化成功");
                     if (initInfo.getImgs() != null) {
                         if (initInfo.getImgs().size() > 0) {
+                            bannerImage.clear();
                             for (int i = 0; i < initInfo.getImgs().size(); i++) {
                                 bannerImage.add(initInfo.getImgs().get(i));
                             }

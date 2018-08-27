@@ -1,14 +1,18 @@
 package com.tc.lottery.util;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.bumptech.glide.Glide;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.psylife.wrmvplibrary.utils.timeutils.DateUtil;
 import com.tc.lottery.BuildConfig;
 import com.tc.lottery.MyApplication;
+import com.tc.lottery.R;
 import com.tc.lottery.bean.BaseBean;
 
 import java.net.SocketException;
@@ -75,8 +79,7 @@ public class Utils {
         requestData.put("application", application); //应用名称
         requestData.put("sendTime", DateUtil.format(new Date(), "yyyymmddhhmmss")); //发送时间
         requestData.put("terminalCode", "0002"); //终端类型
-//        requestData.put("terminalId", GetUUID.getUUID()); //终端编号
-        requestData.put("terminalId", "037100000100002"); //终端编号
+        requestData.put("terminalId", MyApplication.UUID); //终端编号
         return requestData;
     }
 
@@ -101,4 +104,23 @@ public class Utils {
         }
         return "";
     }
+
+    /**
+     * 设置图片
+     *
+     * @param context
+     * @param model
+     * @param imageView
+     * @param <T>
+     */
+    public static <T> void loadHeadIcon(Context context, T model, ImageView imageView) {
+        Glide.with(context.getApplicationContext()).load(model)
+                .dontAnimate()
+                .placeholder(R.mipmap.ic_launcher) //设置占位图
+//                .error(R.mipmap.touxiang) //设置错误图片
+//                .crossFade() //设置淡入淡出效果，默认300ms，可以传参
+                .into(imageView);
+
+    }
+
 }

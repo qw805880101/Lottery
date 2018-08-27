@@ -1,5 +1,6 @@
 package com.tc.lottery.api;
 
+import com.psylife.wrmvplibrary.bean.BaseBeanInfo;
 import com.tc.lottery.bean.BaseBean;
 import com.tc.lottery.bean.InitInfo;
 import com.tc.lottery.bean.OrderInfo;
@@ -492,6 +493,14 @@ public interface Api {
 
     @POST(".")
     Observable<InitInfo> init(@Body RequestBody file);
+
+    /**
+     * 退出
+     * @param file
+     * @return
+     */
+    @POST(".")
+    Observable<BaseBeanInfo> exit(@Body RequestBody file);
 
     /**
      * 下单接口

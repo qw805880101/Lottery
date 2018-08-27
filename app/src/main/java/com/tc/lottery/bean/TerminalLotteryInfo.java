@@ -47,6 +47,18 @@ public class TerminalLotteryInfo implements Serializable {
      * 张数
      */
     private String num;
+    /**
+     * 票尺寸
+     */
+    private String ticketLen;
+
+    public String getTicketLen() {
+        return ticketLen;
+    }
+
+    public void setTicketLen(String ticketLen) {
+        this.ticketLen = ticketLen;
+    }
 
     public String getTicketStatus() {
         return ticketStatus;

@@ -61,6 +61,7 @@ public class UpdateAppReceiver extends BroadcastReceiver {
                 }
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
         }
     }

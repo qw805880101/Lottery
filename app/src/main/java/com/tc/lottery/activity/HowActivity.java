@@ -39,7 +39,7 @@ public class HowActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.txt_buy, R.id.txt_back})
+    @OnClick({R.id.txt_buy, R.id.txt_back, R.id.bt_device})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_buy:
@@ -48,6 +48,9 @@ public class HowActivity extends BaseActivity {
                 break;
             case R.id.txt_back:
                 finish();
+                break;
+            case R.id.bt_device:
+                startActivity(new Intent(this, DeviceActivity.class));
                 break;
         }
     }

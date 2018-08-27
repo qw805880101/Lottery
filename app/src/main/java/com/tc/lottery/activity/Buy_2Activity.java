@@ -137,12 +137,24 @@ public class Buy_2Activity extends BaseActivity {
      */
     @BindView(R.id.bt_back)
     Button btBackMain;
+    /**
+     * 彩票图片
+     */
+    @BindView(R.id.image_lottery_image)
+    ImageView imageLottery;
+    /**
+     * 彩票最高金额
+     */
+    @BindView(R.id.image_lottery_image_02)
+    ImageView imageLottery02;
 
 
     private TerminalLotteryInfo mTerminalLotteryInfo; //第一条票种
 
     private int lotteryNum = 1; //彩票票数
     private double lotteryTotalAmt = 0; //彩票总金额
+    private String lotteryAmt = "500"; //彩票单价(分)
+    private String lotteryId = "10"; //彩票id
     private int surplus = 0; //余票
 
     private Map orderMap; //订单map
@@ -221,7 +233,77 @@ public class Buy_2Activity extends BaseActivity {
             mImageSoldOut.setVisibility(View.VISIBLE);
         }
 
+        if (!mTerminalLotteryInfo.getLotteryAmt().equals(""))
+            lotteryAmt = mTerminalLotteryInfo.getLotteryAmt();
+
+        if (!mTerminalLotteryInfo.getLotteryId().equals(""))
+            lotteryId = mTerminalLotteryInfo.getLotteryId();
+
+        mImageAmt.setImageResource(getAmtPic(lotteryAmt));
+
+        String[] lotteryImages = null;
+        if (mTerminalLotteryInfo.getLotteryImg() != null)
+            lotteryImages = mTerminalLotteryInfo.getLotteryImg().split(",");
+        if (lotteryImages != null) {
+            if (lotteryImages.length >= 1 && null != lotteryImages[0] && !"".equals(lotteryImages[0])) {
+                Utils.loadHeadIcon(this, lotteryImages[0], imageLottery);
+            }
+            if (lotteryImages.length >= 2 && null != lotteryImages[1] && !"".equals(lotteryImages[1])) {
+                Utils.loadHeadIcon(this, lotteryImages[1], imageLottery02);
+            } else {
+                imageLottery02.setImageResource(getTopPic(lotteryId));
+            }
+        }
+
+
         updateLotteryNum(0);
+    }
+
+    /**
+     * 获取最高奖金图片
+     *
+     * @param id
+     * @return
+     */
+    private int getTopPic(String id) {
+        if (id.equals("10") || id.equals("16") || id.equals("19") ) { //10w
+            return R.mipmap.buy_step1_jiangjin;
+        }
+        if (id.equals("12")) { //15w
+            return R.mipmap.buy_step1_jiangjin15;
+        }
+        if (id.equals("13") || id.equals("14")) { //100w
+            return R.mipmap.buy_step1_jiangjin100;
+        }
+        if (id.equals("18")) { //25w
+            return R.mipmap.buy_step1_jiangjin25;
+        }
+        return R.mipmap.buy_step1_jiangjin;
+    }
+
+    /**
+     * 获取金额图片
+     *
+     * @param amt
+     * @return
+     */
+    private int getAmtPic(String amt) {
+        if (amt.equals("200")) {
+            return R.mipmap.buy_step1_2yuan;
+        }
+        if (amt.equals("500")) {
+            return R.mipmap.buy_step1_5yuan;
+        }
+        if (amt.equals("1000")) {
+            return R.mipmap.buy_step1_10yuan;
+        }
+        if (amt.equals("2000")) {
+            return R.mipmap.buy_step1_20yuan;
+        }
+        if (amt.equals("3000")) {
+            return R.mipmap.buy_step1_30yuan;
+        }
+        return R.mipmap.buy_step1_5yuan;
     }
 
     @OnClick({R.id.bt_add, R.id.bt_reduce, R.id.bt_add_five, R.id.bt_add_ten, R.id.bt_clear
